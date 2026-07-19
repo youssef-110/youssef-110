@@ -1,10 +1,10 @@
 <!-- ══════════════════ HEADER ══════════════════ -->
 <div align="center">
 
-<img src="https://capsule-render.vercel.app/api?type=venom&color=0:0d0000,50:8B0000,100:DC143C&height=230&text=YOUSSEF%20ELKHASHAB&fontSize=52&fontColor=ffffff&animation=twinkling&desc=Software%20Engineer%20•%20AI%20Systems%20•%20Full-Stack%20Development&descSize=19&descAlignY=75" width="100%"/>
+<img src="https://capsule-render.vercel.app/api?type=venom&color=0:0d0000,50:8B0000,100:DC143C&height=230&text=YOUSSEF%20ELKHASHAB&fontSize=52&fontColor=ffffff&animation=twinkling&desc=Software%20Engineer%20%7C%20AI%20Systems%20%7C%20Full-Stack%20Development&descSize=19&descAlignY=75" width="100%"/>
 
 <a href="https://github.com/youssef-110">
-<img src="https://readme-typing-svg.demolab.com?font=JetBrains+Mono&weight=700&size=25&duration=2800&pause=700&color=DC143C&center=true&vCenter=true&width=720&lines=Full-Stack+%26+AI+Engineer;Agentic+AI+Workflows+•+RAG+Pipelines;AI+Track+Winner+—+Berlin+Robotics+%26+Agentic+AI+Hackathon;Real-Time+Systems+•+Automation+•+Data+Engineering" alt="Typing animation" />
+<img src="https://readme-typing-svg.demolab.com?font=JetBrains+Mono&weight=700&size=25&duration=2800&pause=700&color=DC143C&center=true&vCenter=true&width=720&lines=Full-Stack+%26+AI+Engineer;Agentic+AI+Workflows+%7C+RAG+Pipelines;AI+Track+Winner+-+Berlin+Robotics+%26+Agentic+AI+Hackathon;Real-Time+Systems+%7C+Automation+%7C+Data+Engineering" alt="Typing animation" />
 </a>
 
 <br/><br/>
@@ -56,12 +56,12 @@ Software engineer specializing in **AI-driven systems and full-stack development
 ### AI & Automation
 <img src="https://img.shields.io/badge/RAG_Pipelines-8B0000?style=for-the-badge&logo=databricks&logoColor=white" />
 <img src="https://img.shields.io/badge/Mistral_AI-1a0000?style=for-the-badge&logo=mistralai&logoColor=DC143C" />
-<img src="https://img.shields.io/badge/Groq_•_Llama_3.3-8B0000?style=for-the-badge&logo=meta&logoColor=white" />
+<img src="https://img.shields.io/badge/Groq_%2F_Llama_3.3-8B0000?style=for-the-badge&logo=meta&logoColor=white" />
 <img src="https://img.shields.io/badge/Gemini_API-1a0000?style=for-the-badge&logo=googlegemini&logoColor=DC143C" />
 <img src="https://img.shields.io/badge/n8n_Automation-8B0000?style=for-the-badge&logo=n8n&logoColor=white" />
 <img src="https://img.shields.io/badge/Multi--Agent_Routing-1a0000?style=for-the-badge&logo=openai&logoColor=DC143C" />
 <img src="https://img.shields.io/badge/Prompt_Engineering-8B0000?style=for-the-badge&logo=openai&logoColor=white" />
-<img src="https://img.shields.io/badge/WebGL_•_GSAP-1a0000?style=for-the-badge&logo=webgl&logoColor=DC143C" />
+<img src="https://img.shields.io/badge/WebGL_%2F_GSAP-1a0000?style=for-the-badge&logo=webgl&logoColor=DC143C" />
 
 </div>
 
@@ -150,7 +150,7 @@ C++ CLI gateway + Chrome extension routing prompts to different AI backends via 
 
 ## 📊 GitHub Analytics
 
-<img src="https://github-readme-stats.vercel.app/api?username=youssef-110&show_icons=true&theme=dark&bg_color=0d0000&title_color=DC143C&icon_color=8B0000&text_color=ffffff&border_color=8B0000&rank_icon=github&include_all_commits=true" height="170"/>
+<img src="https://github-readme-stats.vercel.app/api?username=youssef-110&show_icons=true&theme=dark&bg_color=0d0000&title_color=DC143C&icon_color=8B0000&text_color=ffffff&border_color=8B0000&rank_icon=github" height="170"/>
 <img src="https://github-readme-stats.vercel.app/api/top-langs/?username=youssef-110&layout=compact&theme=dark&bg_color=0d0000&title_color=DC143C&text_color=ffffff&border_color=8B0000&langs_count=8" height="170"/>
 
 <br/><br/>
