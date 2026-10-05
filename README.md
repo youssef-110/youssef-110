@@ -1,7 +1,7 @@
 <!-- ═══════════════════════ HEADER ═══════════════════════ -->
 <div align="center">
 
-<img src="https://capsule-render.vercel.app/api?type=venom&color=0:0d0000,50:8B0000,100:DC143C&height=240&text=YOUSSEF%20ELKHASHAB&fontSize=52&fontColor=ffffff&animation=twinkling&desc=Software%20Engineer%20%7C%20AI%20Systems%20%7C%20Full-Stack%20Development&descSize=19&descAlignY=76" width="100%"/>
+<img src="https://capsule-render.vercel.app/api?type=venom&color=0:0d0000,50:8B0000,100:DC143C&height=240&text=YOUSSEF%20&fontSize=52&fontColor=ffffff&animation=twinkling&desc=Software%20Engineer%20%7C%20AI%20Systems%20%7C%20Full-Stack%20Development&descSize=19&descAlignY=76" width="100%"/>
 
 <a href="https://github.com/youssef-110">
 <img src="https://readme-typing-svg.demolab.com?font=JetBrains+Mono&weight=700&size=25&duration=2800&pause=700&color=DC143C&center=true&vCenter=true&width=720&lines=Full-Stack+%26+AI+Engineer;Agentic+AI+Workflows+%7C+RAG+Pipelines;AI+Track+Winner+-+Berlin+Robotics+%26+Agentic+AI+Hackathon;Real-Time+Systems+%7C+Automation+%7C+Data+Engineering" alt="Typing animation" />
