@@ -28,8 +28,7 @@
 
 Software engineer specializing in **AI-driven systems and full-stack development**. I design and ship complete products end to end — from automated data pipelines and RAG architectures to polished, real-time frontends.
 
-> [!NOTE]
-> **AI Track Winner — Berlin Robotics & Agentic AI Hackathon.**
+> 🏆 **AI Track Winner — Berlin Robotics & Agentic AI Hackathon**<br/>
 > Led a 6-person team to design, build, and deploy **SERVANAUT**, a real-time market-intelligence platform, end-to-end in a 36-hour sprint.
 
 <table>
