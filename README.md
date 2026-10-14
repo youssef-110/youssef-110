@@ -1,40 +1,40 @@
 <!-- ═══════════════════════ HEADER ═══════════════════════ -->
 <div align="center">
 
-<img src="https://capsule-render.vercel.app/api?type=venom&color=0:0d0000,50:8B0000,100:DC143C&height=240&text=YOUSSEF%20&fontSize=52&fontColor=ffffff&animation=twinkling&desc=Software%20Engineer%20%7C%20AI%20Systems%20%7C%20Full-Stack%20Development&descSize=19&descAlignY=76" width="100%"/>
-
-<a href="https://github.com/youssef-110">
-<img src="https://readme-typing-svg.demolab.com?font=JetBrains+Mono&weight=700&size=25&duration=2800&pause=700&color=DC143C&center=true&vCenter=true&width=720&lines=Full-Stack+%26+AI+Engineer;Agentic+AI+Workflows+%7C+RAG+Pipelines;AI+Track+Winner+-+Berlin+Robotics+%26+Agentic+AI+Hackathon;Real-Time+Systems+%7C+Automation+%7C+Data+Engineering" alt="Typing animation" />
-</a>
+<img src="./assets/header.svg" width="100%" alt="YOUSSEF — Software Engineer · AI Systems · Full-Stack" />
 
 <br/>
 
-<!-- FOCUS CHIPS -->
-<img src="https://img.shields.io/badge/Building-Agentic_AI_Systems-DC143C?style=flat-square&labelColor=0d0000" />
-<img src="https://img.shields.io/badge/Focus-Full--Stack_%2B_LLMs-8B0000?style=flat-square&labelColor=0d0000" />
-<img src="https://img.shields.io/badge/Open_to-Internships_%26_Roles-DC143C?style=flat-square&labelColor=0d0000" />
+<img src="https://img.shields.io/badge/Building-Agentic_AI_Systems-FFD21F?style=flat-square&labelColor=070D20" />
+<img src="https://img.shields.io/badge/Focus-Full--Stack_%2B_LLMs-2B4FB3?style=flat-square&labelColor=070D20" />
+<img src="https://img.shields.io/badge/Open_to-Internships_%26_Roles-FFD21F?style=flat-square&labelColor=070D20" />
 
 <br/><br/>
 
-<a href="https://youssef-elkashab.netlify.app"><img src="https://img.shields.io/badge/⚡_Portfolio-8B0000?style=for-the-badge&logoColor=white" /></a>
-<a href="https://github.com/youssef-110?tab=followers"><img src="https://img.shields.io/github/followers/youssef-110?style=for-the-badge&logo=github&label=Follow&color=1a0000&logoColor=DC143C&labelColor=1a0000" /></a>
-<img src="https://komarev.com/ghpvc/?username=youssef-110&style=for-the-badge&color=8B0000&label=PROFILE+VIEWS" />
+<a href="https://youssef-elkashab.netlify.app"><img src="https://img.shields.io/badge/Portfolio-FFD21F?style=for-the-badge&logo=googlechrome&logoColor=070D20" /></a>
+<a href="https://github.com/youssef-110?tab=followers"><img src="https://img.shields.io/github/followers/youssef-110?style=for-the-badge&logo=github&label=Follow&color=0A1330&logoColor=FFD21F&labelColor=070D20" /></a>
+<img src="https://komarev.com/ghpvc/?username=youssef-110&style=for-the-badge&color=2B4FB3&label=PROFILE+VIEWS" />
 
 </div>
 
 <br/>
 
 <!-- ═══════════════════════ ABOUT ═══════════════════════ -->
-## ⚡ About
+<div align="center">
+<img src="./assets/batcomputer.svg" width="100%" alt="Batcomputer case file" />
+</div>
+
+<br/>
 
 Software engineer specializing in **AI-driven systems and full-stack development**. I design and ship complete products end to end — from automated data pipelines and RAG architectures to polished, real-time frontends.
 
-> 🏆 **AI Track Winner — Berlin Robotics & Agentic AI Hackathon**
+> [!NOTE]
+> **AI Track Winner — Berlin Robotics & Agentic AI Hackathon.**
 > Led a 6-person team to design, build, and deploy **SERVANAUT**, a real-time market-intelligence platform, end-to-end in a 36-hour sprint.
 
 <table>
 <tr>
-<td>🤖 <b>Agentic AI Engineering</b></td>
+<td>🦇 <b>Agentic AI Engineering</b></td>
 <td>Multi-agent routing, RAG pipelines, LLM orchestration & automation workflows</td>
 </tr>
 <tr>
@@ -51,12 +51,12 @@ Software engineer specializing in **AI-driven systems and full-stack development
 </tr>
 </table>
 
----
+<img src="./assets/divider.svg" width="100%" />
 
 <!-- ═══════════════════════ TECH STACK ═══════════════════════ -->
 <div align="center">
 
-## 🔥 Tech Stack
+## Utility Belt
 
 **Languages**
 
@@ -72,21 +72,21 @@ Software engineer specializing in **AI-driven systems and full-stack development
 
 **AI & Automation**
 
-<img src="https://img.shields.io/badge/RAG_Pipelines-8B0000?style=for-the-badge&logo=databricks&logoColor=white" />
-<img src="https://img.shields.io/badge/Mistral_AI-1a0000?style=for-the-badge&logo=mistralai&logoColor=DC143C" />
-<img src="https://img.shields.io/badge/Groq_%2F_Llama_3.3-8B0000?style=for-the-badge&logo=meta&logoColor=white" />
-<img src="https://img.shields.io/badge/OpenAI_API-1a0000?style=for-the-badge&logo=openai&logoColor=DC143C" />
-<img src="https://img.shields.io/badge/Gemini_API-8B0000?style=for-the-badge&logo=googlegemini&logoColor=white" />
-<img src="https://img.shields.io/badge/n8n_Automation-1a0000?style=for-the-badge&logo=n8n&logoColor=DC143C" />
-<img src="https://img.shields.io/badge/Multi--Agent_Routing-8B0000?style=for-the-badge&logo=openai&logoColor=white" />
-<img src="https://img.shields.io/badge/Prompt_Engineering-1a0000?style=for-the-badge&logo=openai&logoColor=DC143C" />
+<img src="https://img.shields.io/badge/RAG_Pipelines-FFD21F?style=for-the-badge&logo=databricks&logoColor=070D20" />
+<img src="https://img.shields.io/badge/Mistral_AI-0A1330?style=for-the-badge&logo=mistralai&logoColor=FFD21F" />
+<img src="https://img.shields.io/badge/Groq_%2F_Llama_3.3-FFD21F?style=for-the-badge&logo=meta&logoColor=070D20" />
+<img src="https://img.shields.io/badge/OpenAI_API-0A1330?style=for-the-badge&logo=openai&logoColor=FFD21F" />
+<img src="https://img.shields.io/badge/Gemini_API-FFD21F?style=for-the-badge&logo=googlegemini&logoColor=070D20" />
+<img src="https://img.shields.io/badge/n8n_Automation-0A1330?style=for-the-badge&logo=n8n&logoColor=FFD21F" />
+<img src="https://img.shields.io/badge/Multi--Agent_Routing-FFD21F?style=for-the-badge&logo=openai&logoColor=070D20" />
+<img src="https://img.shields.io/badge/Prompt_Engineering-0A1330?style=for-the-badge&logo=openai&logoColor=FFD21F" />
 
 </div>
 
----
+<img src="./assets/divider.svg" width="100%" />
 
 <!-- ═══════════════════════ PROJECTS ═══════════════════════ -->
-## 🗡️ Featured Projects
+## Case Files
 
 <table>
 <tr>
@@ -99,7 +99,7 @@ Real-time dashboard for robotics founders: live news feed, AI event discovery, c
 
 `n8n` `Apify` `Mistral AI` `Supabase` `React`
 
-**→ Winner, AI Track — Berlin Hackathon**
+**→ Winner, AI Track — Berlin Hackathon** · [**Repo**](https://github.com/youssef-110/servanaut-v2)
 
 </td>
 <td width="50%" valign="top">
@@ -110,6 +110,8 @@ Real-time dashboard for robotics founders: live news feed, AI event discovery, c
 Analyzes any public GitHub repo and returns structured feedback on security, quality & performance. Custom file-ranking algorithm maximizes LLM context quality within token limits.
 
 `Node.js` `Express` `Groq (Llama 3.3 70B)` `GitHub API`
+
+[**→ View Repository**](https://github.com/youssef-110/codepulse)
 
 </td>
 </tr>
@@ -147,6 +149,8 @@ Collaborative personality-test & community app with a **custom RAG pipeline** em
 
 `Python` `FastAPI` `React/Vite` `Supabase`
 
+[**→ View Repository**](https://github.com/youssef-110/MindSpace-FullStack-Core)
+
 </td>
 <td width="50%" valign="top">
 
@@ -157,44 +161,39 @@ C++ CLI gateway + Chrome extension routing prompts to different AI backends via 
 
 `C++` `JavaScript` `Chrome Extension` `Gemini API`
 
+[**→ View Repository**](https://github.com/youssef-110/Prompt-Router)
+
 </td>
 </tr>
 </table>
 
----
+<img src="./assets/divider.svg" width="100%" />
 
 <!-- ═══════════════════════ STATS ═══════════════════════ -->
 <div align="center">
 
-## 📊 GitHub Analytics
+## Surveillance Feed
 
-<img src="https://github-readme-stats.vercel.app/api?username=youssef-110&show_icons=true&theme=dark&bg_color=0d0000&title_color=DC143C&icon_color=8B0000&text_color=ffffff&border_color=8B0000&rank_icon=github&hide_rank=false" height="170"/>
-<img src="https://github-readme-stats.vercel.app/api/top-langs/?username=youssef-110&layout=compact&theme=dark&bg_color=0d0000&title_color=DC143C&text_color=ffffff&border_color=8B0000&langs_count=8" height="170"/>
+<img src="https://github-readme-stats.vercel.app/api?username=youssef-110&show_icons=true&theme=dark&bg_color=0A1330&title_color=FFD21F&icon_color=FFD21F&text_color=DFE6FF&border_color=1E2D5A&rank_icon=github&hide_rank=false" height="170"/>
+<img src="https://github-readme-stats.vercel.app/api/top-langs/?username=youssef-110&layout=compact&theme=dark&bg_color=0A1330&title_color=FFD21F&text_color=DFE6FF&border_color=1E2D5A&langs_count=8" height="170"/>
 
 <br/><br/>
 
-<img src="https://streak-stats.demolab.com?user=youssef-110&theme=dark&background=0d0000&ring=DC143C&fire=DC143C&currStreakLabel=DC143C&border=8B0000&sideNums=ffffff&sideLabels=DC143C&dates=888888" />
+<img src="https://streak-stats.demolab.com?user=youssef-110&theme=dark&background=0A1330&ring=FFD21F&fire=FF9F1C&currStreakNum=FFFFFF&currStreakLabel=FFD21F&border=1E2D5A&stroke=1E2D5A&sideNums=FFFFFF&sideLabels=FFD21F&dates=7F95D6" />
 
-</div>
-
----
-
-<!-- ═══════════════════════ SNAKE ═══════════════════════ -->
-<div align="center">
-
-## 🐍 Contribution Graph
+<br/><br/>
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/youssef-110/youssef-110/output/github-snake-dark.svg" />
-  <img alt="snake animation" src="https://raw.githubusercontent.com/youssef-110/youssef-110/output/github-snake.svg" width="95%" />
+  <img alt="contribution snake" src="https://raw.githubusercontent.com/youssef-110/youssef-110/output/github-snake.svg" width="95%" />
 </picture>
 
 </div>
 
----
+<img src="./assets/divider.svg" width="100%" />
 
 <!-- ═══════════════════════ CERTIFICATIONS ═══════════════════════ -->
-## 📜 Certifications
+## Training Log
 
 <div align="center">
 
@@ -209,8 +208,4 @@ C++ CLI gateway + Chrome extension routing prompts to different AI backends via 
 <br/>
 
 <!-- ═══════════════════════ FOOTER ═══════════════════════ -->
-<div align="center">
-
-<img src="https://capsule-render.vercel.app/api?type=venom&color=0:DC143C,50:8B0000,100:0d0000&height=140&section=footer" width="100%"/>
-
-</div>
+<img src="./assets/footer.svg" width="100%" alt="The city never sleeps · neither does the code" />

@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 200" width="1200" height="200" role="img" aria-label="I am the night — thanks for visiting">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#14224d" stop-opacity="0"/>
+      <stop offset=".45" stop-color="#0a1330"/>
+      <stop offset="1" stop-color="#03060f"/>
+    </linearGradient>
+    <filter id="blur14" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="14"/></filter>
+    <path id="bat" d="M100,34 L95,34 L92,20 L88,36 L84,40 Q50,26 8,28 Q14,48 28,62 Q40,52 50,62 Q60,56 72,70 Q88,66 100,92 Q112,66 128,70 Q140,56 150,62 Q160,52 172,62 Q186,48 192,28 Q150,26 116,40 L112,36 L108,20 L105,34 Z"/>
+    <style>
+      .flick { animation: flick 6s ease-in-out infinite; }
+      .d2 { animation-delay: -2s; animation-duration: 8s; }
+      .d3 { animation-delay: -4s; }
+      .f1 { animation: flap1 9s linear infinite; }
+      .f2 { animation: flap2 13s linear -5s infinite; }
+      .win { animation: blink 7s steps(1) infinite; }
+      .w2 { animation-delay: -3s; animation-duration: 10s; }
+      @keyframes flick { 0%,100% { opacity: .45; } 50% { opacity: .95; } }
+      @keyframes flap1 { from { transform: translate(-60px, 60px) scale(.12); } to { transform: translate(1260px, 20px) scale(.12); } }
+      @keyframes flap2 { from { transform: translate(1260px, 40px) scale(.08); } to { transform: translate(-60px, 70px) scale(.08); } }
+      @keyframes blink { 0%,100% { opacity: .9; } 45% { opacity: .1; } }
+      @media (prefers-reduced-motion: reduce) { * { animation: none !important; } }
+    </style>
+  </defs>
+  <rect width="1200" height="200" fill="url(#sky)"/>
+  <g filter="url(#blur14)">
+    <circle class="flick" cx="180" cy="80" r="16" fill="#ff9f1c"/>
+    <circle class="flick d2" cx="980" cy="70" r="20" fill="#ffb347"/>
+    <circle class="flick d3" cx="620" cy="110" r="12" fill="#5b8cff"/>
+  </g>
+  <use class="f1" href="#bat" fill="#02040a"/>
+  <use class="f2" href="#bat" fill="#02040a"/>
+  <path fill="#050913" d="M0,200 V160 H30 V140 H52 V164 H80 V120 H92 V106 H104 V120 H118 V170 H150 V150 H180 V176 H210 V134 H224 V116 H236 V134 H250 V180 H290 V156 H320 V168 H352 V128 H366 V104 H372 V92 H378 V104 H384 V128 H404 V174 H440 V150 H470 V182 H500 V146 H530 V164 H560 V136 H580 V120 H596 V136 H612 V178 H650 V160 H680 V144 H706 V172 H740 V138 H752 V108 H760 V90 H768 V108 H776 V138 H800 V170 H830 V156 H860 V180 H890 V148 H920 V166 H944 V126 H960 V114 H976 V126 H990 V176 H1020 V158 H1050 V140 H1084 V170 H1112 V150 H1136 V130 H1150 V118 H1166 V130 H1180 V164 H1200 V200 Z"/>
+  <g fill="#ffd21f">
+    <rect class="win" x="98" y="128" width="4" height="5"/>
+    <rect class="win w2" x="372" y="112" width="4" height="5"/>
+    <rect class="win" x="586" y="144" width="4" height="5"/>
+    <rect class="win w2" x="760" y="118" width="4" height="5"/>
+    <rect class="win" x="966" y="134" width="4" height="5"/>
+    <rect class="win w2" x="1156" y="138" width="4" height="5"/>
+  </g>
+  <text x="600" y="194" text-anchor="middle" font-family="'JetBrains Mono',Consolas,'Courier New',monospace" font-size="12" letter-spacing="5" fill="#5b7fe0">THE CITY NEVER SLEEPS · NEITHER DOES THE CODE</text>
+</svg>

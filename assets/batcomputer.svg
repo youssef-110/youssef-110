@@ -1,0 +1,85 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 384" width="1000" height="384" role="img" aria-label="Batcomputer terminal: whoami — Youssef, software engineer, AI systems, full-stack. AI Track Winner, Berlin Robotics and Agentic AI Hackathon. Focus: agentic AI, RAG pipelines, real-time systems, security. Open to internships and roles.">
+  <defs>
+    <linearGradient id="panel" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#0b1430"/>
+      <stop offset="1" stop-color="#070d20"/>
+    </linearGradient>
+    <linearGradient id="edge" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#ffd21f" stop-opacity=".9"/>
+      <stop offset=".35" stop-color="#2b4fb3" stop-opacity=".6"/>
+      <stop offset="1" stop-color="#1a2a5c" stop-opacity=".6"/>
+    </linearGradient>
+    <pattern id="scan" width="4" height="4" patternUnits="userSpaceOnUse">
+      <rect width="4" height="1" fill="#ffffff" opacity=".025"/>
+    </pattern>
+    <clipPath id="win"><rect x="8" y="8" width="984" height="368" rx="14"/></clipPath>
+    <path id="bat" d="M100,34 L95,34 L92,20 L88,36 L84,40 Q50,26 8,28 Q14,48 28,62 Q40,52 50,62 Q60,56 72,70 Q88,66 100,92 Q112,66 128,70 Q140,56 150,62 Q160,52 172,62 Q186,48 192,28 Q150,26 116,40 L112,36 L108,20 L105,34 Z"/>
+    <style>
+      text { font-family: 'JetBrains Mono','Cascadia Code',Consolas,'Courier New',monospace; font-size: 17px; }
+      .p { fill: #5b7fe0; }
+      .c { fill: #eef2ff; }
+      .o { fill: #9fb3ea; opacity: 0; animation: show .35s ease-out forwards; }
+      .y { fill: #ffd21f; }
+      .k { fill: #ff9f1c; }
+      .cover { fill: #0a1330; animation: type var(--d) steps(var(--n)) forwards; }
+      .row { opacity: 0; animation: show .01s linear forwards; }
+      .cursor { fill: #ffd21f; animation: blink 1s steps(1) infinite; }
+      .scanline { animation: scanmove 6s linear infinite; }
+      .led { animation: led 2.4s ease-in-out infinite; }
+      @keyframes type { to { transform: translateX(var(--w)); } }
+      @keyframes show { to { opacity: 1; } }
+      @keyframes blink { 50% { opacity: 0; } }
+      @keyframes scanmove { from { transform: translateY(-60px); } to { transform: translateY(400px); } }
+      @keyframes led { 0%,100% { opacity: .35; } 50% { opacity: 1; } }
+      @media (prefers-reduced-motion: reduce) { * { animation: none !important; } .o,.row { opacity: 1; } .cover { display: none; } }
+    </style>
+  </defs>
+
+  <rect x="8" y="8" width="984" height="368" rx="14" fill="url(#panel)"/>
+  <g clip-path="url(#win)">
+    <rect width="1000" height="384" fill="url(#scan)"/>
+    <rect class="scanline" x="0" y="0" width="1000" height="40" fill="#5b7fe0" opacity=".05"/>
+
+    <!-- title bar -->
+    <rect x="8" y="8" width="984" height="44" fill="#0e1a3d"/>
+    <use href="#bat" transform="translate(28 18) scale(0.14)" fill="#ffd21f"/>
+    <text x="64" y="36" style="font-size:13px;letter-spacing:3px" fill="#c6d2f7">BATCOMPUTER  ·  CASE FILE #110</text>
+    <circle class="led" cx="958" cy="30" r="5" fill="#ffd21f"/>
+    <text x="890" y="35" style="font-size:12px;letter-spacing:2px" fill="#5b7fe0">ONLINE</text>
+
+    <!-- 1 -->
+    <g class="row" style="animation-delay:.4s">
+      <text x="40" y="92"><tspan class="p">batcave:~$</tspan><tspan class="c" x="152">whoami</tspan></text>
+      <rect class="cover" x="150" y="74" width="760" height="26" style="--w:66px;--n:6;--d:.5s;animation-delay:.6s"/>
+    </g>
+    <text class="o" x="40" y="120" style="animation-delay:1.3s"><tspan class="y">youssef</tspan> — software engineer · ai systems · full-stack</text>
+
+    <!-- 2 -->
+    <g class="row" style="animation-delay:1.8s">
+      <text x="40" y="160"><tspan class="p">batcave:~$</tspan><tspan class="c" x="152">cat case_file.txt</tspan></text>
+      <rect class="cover" x="150" y="142" width="760" height="26" style="--w:180px;--n:17;--d:.9s;animation-delay:2s"/>
+    </g>
+    <text class="o" x="40" y="188" style="animation-delay:3.1s"><tspan class="k">★</tspan> AI Track Winner — Berlin Robotics &amp; Agentic AI Hackathon</text>
+
+    <!-- 3 -->
+    <g class="row" style="animation-delay:3.6s">
+      <text x="40" y="228"><tspan class="p">batcave:~$</tspan><tspan class="c" x="152">ls ./focus</tspan></text>
+      <rect class="cover" x="150" y="210" width="760" height="26" style="--w:108px;--n:10;--d:.6s;animation-delay:3.8s"/>
+    </g>
+    <text class="o" x="40" y="256" style="animation-delay:4.6s"><tspan class="y">agentic-ai/</tspan>   rag-pipelines/   real-time-systems/   security/</text>
+
+    <!-- 4 -->
+    <g class="row" style="animation-delay:5.1s">
+      <text x="40" y="296"><tspan class="p">batcave:~$</tspan><tspan class="c" x="152">status --availability</tspan></text>
+      <rect class="cover" x="150" y="278" width="760" height="26" style="--w:222px;--n:21;--d:1s;animation-delay:5.3s"/>
+    </g>
+    <text class="o" x="40" y="324" style="animation-delay:6.5s"><tspan class="y">● OPEN</tspan>  → internships &amp; engineering roles</text>
+
+    <!-- prompt -->
+    <g class="row" style="animation-delay:7s">
+      <text x="40" y="360"><tspan class="p">batcave:~$</tspan></text>
+      <rect class="cursor" x="152" y="345" width="10" height="19"/>
+    </g>
+  </g>
+  <rect x="8.5" y="8.5" width="983" height="367" rx="14" fill="none" stroke="url(#edge)" stroke-width="1.5"/>
+</svg>
