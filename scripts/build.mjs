@@ -8,10 +8,10 @@ const OUT = new URL('../assets/', import.meta.url);
 const W = 1200;
 
 const C = {
-  // palette pulled from the profile picture: slate-blue night, pale moon, maroon cowl
-  bg: '#0a0f17', panel: '#0c121b', line: '#1c2636', dim: '#6c7a90', text: '#c3cddb',
-  bright: '#e6ecf3', gold: '#b4495a', black: '#060a10',
-  ramp: ['#111924', '#1f2c3d', '#344863', '#5e7898', '#b8c7dc'],
+  // near-black night, cold steel greys, one red accent
+  bg: '#05060a', panel: '#07080c', line: '#161a22', dim: '#646f80', text: '#bfc8d4',
+  bright: '#e6ecf3', gold: '#c0302f', black: '#040507',
+  ramp: ['#0d1016', '#1a1f28', '#2c3440', '#556274', '#a9b5c4'],
 };
 const MONO = "ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace";
 
@@ -105,90 +105,99 @@ function bitmap(text, x, y, px, fill, animate, seed = 1) {
   return out;
 }
 
-// ---------- 1. title: the comic-cover scene ----------
+// ---------- 1. title: batman in the rain ----------
 function title() {
   const H = 460, r = rng(7), o = [];
-  const MX = 830, MY = 205, MR = 200; // moon
+  const FX = 600, FY = 446, FS = 1.22; // figure placement
   o.push(`<defs>
-<linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0d1622"/><stop offset=".6" stop-color="#1a2a3f"/><stop offset="1" stop-color="#2a3e58"/></linearGradient>
-<radialGradient id="mg"><stop offset=".6" stop-color="#d5dde7" stop-opacity=".22"/><stop offset="1" stop-color="#d5dde7" stop-opacity="0"/></radialGradient>
-<radialGradient id="moon" cx=".45" cy=".42"><stop offset="0" stop-color="#e3e9f0"/><stop offset=".8" stop-color="#bfcad7"/><stop offset="1" stop-color="#a9b7c8"/></radialGradient>
-<pattern id="dots" width="7" height="7" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r=".9" fill="#2a3a52" opacity=".55"/><circle cx="5.5" cy="5" r=".6" fill="#2a3a52" opacity=".35"/></pattern>
-<pattern id="hatch" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(-35)"><line x1="0" y1="0" x2="0" y2="6" stroke="#05080d" stroke-width="1.4" opacity=".55"/></pattern>
-<clipPath id="moonclip"><circle cx="${MX}" cy="${MY}" r="${MR}"/></clipPath>
-<filter id="blur" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="6"/></filter>
-<path id="bat" d="${BAT}"/></defs>
-<rect width="${W}" height="${H}" fill="url(#sky)"/>
-<rect width="${W}" height="${H}" fill="url(#dots)" opacity=".5"/>`);
-  for (let i = 0; i < 60; i++) o.push(`<circle cx="${(r() * W) | 0}" cy="${(r() * H) | 0}" r="${[.6, .9, 1.2][(r() * 3) | 0]}" fill="#c9d4e2" opacity="${(.1 + r() * .35).toFixed(2)}"/>`);
-
-  // moon: pale disc, speckle texture, comic ink rings
-  o.push(`<circle cx="${MX}" cy="${MY}" r="${MR + 70}" fill="url(#mg)"/><circle cx="${MX}" cy="${MY}" r="${MR}" fill="url(#moon)"/>
-<g clip-path="url(#moonclip)"><rect x="${MX - MR}" y="${MY - MR}" width="${MR * 2}" height="${MR * 2}" fill="url(#dots)" opacity=".7"/>
-<g fill="none" stroke="#8fa1b8" stroke-width="1.6" opacity=".55"><circle cx="${MX + 60}" cy="${MY - 70}" r="46"/><path d="M${MX - 120},${MY + 30} q40,-40 90,-10"/><circle cx="${MX + 110}" cy="${MY + 60}" r="30"/><path d="M${MX - 40},${MY + 120} q30,-25 70,0"/><path d="M${MX + 20},${MY - 140} q25,10 40,40"/><circle cx="${MX - 70}" cy="${MY - 60}" r="18"/></g></g>`);
-  // clouds across the moon's base
-  for (const [y, d, dl, s, op] of [[330, 110, -20, 1.6, .75], [370, 140, -80, 2, .8], [300, 170, -120, 1.2, .5]])
-    o.push(`<g class="cloud" style="--d:${d}s;animation-delay:${dl}s" opacity="${op}"><g transform="translate(0 ${y}) scale(${s})" fill="#1b2a3e" filter="url(#blur)"><ellipse rx="140" ry="20"/><ellipse cx="60" cy="-12" rx="80" ry="18"/><ellipse cx="-70" cy="4" rx="90" ry="14"/></g></g>`);
-  // bare branches, top left
-  o.push(`<g fill="none" stroke="#0a111b" stroke-linecap="round" class="branch">
-<path d="M-10,40 C80,30 160,60 260,20" stroke-width="10"/><path d="M120,44 C150,10 170,0 200,-10" stroke-width="5"/><path d="M200,36 C230,60 270,70 320,64" stroke-width="5"/>
-<path d="M-10,120 C40,100 90,110 130,80" stroke-width="7"/><path d="M60,104 C70,140 60,170 40,200" stroke-width="3"/><path d="M260,20 C300,10 330,30 360,24" stroke-width="3"/>
-<path d="M90,40 l10,-22 M150,50 l18,10 M240,26 l6,-16 M300,66 l14,-14 M100,92 l-6,-18 M30,112 l-4,20" stroke-width="2.5"/></g>`);
-
-  // the bust: profile facing right, cowl + cape over the shoulder
-  const bust = `<g transform="translate(-60 -70) scale(1.15)"><g class="bust">
-<path d="M150,460 C150,380 190,300 260,262 C300,240 340,232 360,214 L366,170 L372,128 L386,80 L404,126 L420,122 L440,76 L450,130 L463,150 L471,172 L475,190 L488,207 L477,213 L479,223 L475,229 L481,244 L459,257 L452,272 C478,286 505,300 520,340 C534,380 540,420 545,460 Z" fill="#141b28"/>
-<path d="M366,170 L372,128 L386,80 L404,126 L420,122 L440,76 L450,130 L463,150 L471,172 L456,188 L446,232 L459,257 L452,272 C420,262 392,246 370,222 Z" fill="#2a1720"/>
-<path d="M386,80 L404,126 M440,76 L450,130 M372,128 C366,160 364,190 370,222" fill="none" stroke="#7a3d4c" stroke-width="2.2" opacity=".7"/>
-<path d="M456,188 L466,186 L475,190 L488,207 L477,213 L479,223 L475,229 L481,244 L459,257 L446,232 Z" fill="#6f7a8f"/>
-<path d="M459,177 L470,175" stroke="#e8eef5" stroke-width="2.4" stroke-linecap="round"/>
-<path d="M150,460 C150,380 190,300 260,262 C300,240 330,236 352,226 C330,262 300,300 290,360 C284,400 290,440 300,460 Z" fill="#321a24"/>
-<path d="M190,330 C230,290 270,268 330,246" fill="none" stroke="#7a3d4c" stroke-width="2" opacity=".5"/>
-<path d="M150,460 C150,380 190,300 260,262 C300,240 330,236 352,226 C330,262 300,300 290,360 C284,400 290,440 300,460 Z" fill="url(#hatch)" opacity=".7"/>
-<path d="M300,460 C290,420 296,370 320,330 C360,300 430,296 470,300 C500,320 520,360 530,400 L545,460 Z" fill="url(#hatch)" opacity=".45"/>
-<use href="#bat" xlink:href="#bat" transform="translate(440 352) scale(1.15 .95) rotate(-4)" fill="#05080d"/>
-<path d="M360,400 q30,10 60,0 M380,430 q30,8 60,-2 M470,380 q20,14 40,10" fill="none" stroke="#05080d" stroke-width="2" opacity=".5"/>
-</g></g>`;
-  o.push(bust);
-
-  // swarm of bats pouring off the shoulder across the moon
-  for (let i = 0; i < 34; i++) {
-    const dur = 7 + r() * 5, dl = -(r() * 12).toFixed(2), sc = (.07 + r() * .1).toFixed(3), jy = (r() * 80 - 40) | 0, jx = (r() * 40) | 0;
-    o.push(`<g><animateMotion dur="${dur.toFixed(1)}s" begin="${dl}s" repeatCount="indefinite" path="M${470 + jx},${300 + jy / 2} C${600 + jx},${220 + jy} ${780},${300 + jy} ${960 + jx},${170 + jy} S${1150},${120 + jy} ${1260},${60 + jy}"/><g transform="scale(${sc})"><use href="#bat" xlink:href="#bat" class="flap" style="animation-duration:${(.22 + r() * .15).toFixed(2)}s" fill="#0b1422"/></g></g>`);
+<linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#040508"/><stop offset=".7" stop-color="#090b11"/><stop offset="1" stop-color="#0f0b0e"/></linearGradient>
+<radialGradient id="flare" cx=".5" cy=".5"><stop offset="0" stop-color="#c22a2a" stop-opacity=".55"/><stop offset=".35" stop-color="#7a1418" stop-opacity=".32"/><stop offset="1" stop-color="#3a0a0c" stop-opacity="0"/></radialGradient>
+<radialGradient id="mg"><stop offset=".55" stop-color="#9fb0c4" stop-opacity=".12"/><stop offset="1" stop-color="#9fb0c4" stop-opacity="0"/></radialGradient>
+<radialGradient id="moon" cx=".45" cy=".42"><stop offset="0" stop-color="#b9c4d2"/><stop offset="1" stop-color="#7f8ea3"/></radialGradient>
+<pattern id="dots" width="6" height="6" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r=".8" fill="#000" opacity=".5"/></pattern>
+<linearGradient id="rim" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#d23a36" stop-opacity="0"/><stop offset="1" stop-color="#d23a36" stop-opacity=".9"/></linearGradient>
+<filter id="blur" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="7"/></filter>
+<filter id="glow" x="-200%" y="-200%" width="500%" height="500%"><feGaussianBlur stdDeviation="2.2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+<path id="bat" d="${BAT}"/>
+<path id="rang" d="M-60,0 C-46,-6 -30,-8 -16,-6 L-8,-14 L-4,-6 L4,-6 L8,-14 L16,-6 C30,-8 46,-6 60,0 C44,0 30,4 18,12 C10,6 4,6 0,14 C-4,6 -10,6 -18,12 C-30,4 -44,0 -60,0Z"/></defs>
+<rect width="${W}" height="${H}" fill="url(#sky)"/>`);
+  for (let i = 0; i < 50; i++) o.push(`<circle cx="${(r() * W) | 0}" cy="${(r() * 220) | 0}" r="${[.5, .8, 1][(r() * 3) | 0]}" fill="#aab6c6" opacity="${(.08 + r() * .3).toFixed(2)}"/>`);
+  // moon behind cloud, top right; bats cross it
+  o.push(`<circle cx="930" cy="120" r="150" fill="url(#mg)"/><circle cx="930" cy="120" r="78" fill="url(#moon)" opacity=".75"/><circle cx="930" cy="120" r="78" fill="url(#dots)"/>`);
+  for (const [y, d, dl, s, op] of [[150, 120, -20, 1.8, .95], [70, 160, -90, 1.4, .8], [190, 140, -50, 2.2, .9]])
+    o.push(`<g class="cloud" style="--d:${d}s;animation-delay:${dl}s" opacity="${op}"><g transform="translate(0 ${y}) scale(${s})" fill="#0b0e14" filter="url(#blur)"><ellipse rx="140" ry="20"/><ellipse cx="60" cy="-12" rx="80" ry="18"/><ellipse cx="-70" cy="4" rx="90" ry="14"/></g></g>`);
+  for (let i = 0; i < 18; i++) {
+    const dur = 9 + r() * 5, dl = -(r() * 14).toFixed(2), sc = (.05 + r() * .07).toFixed(3), jy = (r() * 60 - 30) | 0;
+    o.push(`<g><animateMotion dur="${dur.toFixed(1)}s" begin="${dl}s" repeatCount="indefinite" path="M700,${170 + jy} C820,${110 + jy} 960,${150 + jy} 1260,${40 + jy}"/><g transform="scale(${sc})"><use href="#bat" xlink:href="#bat" class="flap" style="animation-duration:${(.2 + r() * .15).toFixed(2)}s" fill="#05070b"/></g></g>`);
   }
+  // red flare behind the figure
+  o.push(`<ellipse class="flare" cx="${FX}" cy="300" rx="360" ry="230" fill="url(#flare)"/>`);
+  // skyline, almost black, a few red and pale lights
+  let x = 0; const far = [];
+  while (x < W) { const w = 36 + (r() * 50 | 0), h = 90 + (r() * 120 | 0); far.push(`<rect x="${x}" y="${H - h}" width="${w}" height="${h}"/>`); x += w + (r() * 5 | 0); }
+  o.push(`<g fill="#07080c">${far.join('')}</g><g>`);
+  for (let i = 0; i < 70; i++) o.push(`<rect x="${(r() * W) | 0}" y="${(H - 30 - r() * 150) | 0}" width="3" height="5" fill="${r() < .25 ? '#c0392b' : '#8d99aa'}" opacity="${(.25 + r() * .45).toFixed(2)}"${r() < .3 ? ` class="win" style="--d:${8 + (r() * 10 | 0)}s;--o:-${r() * 12 | 0}s"` : ''}/>`);
+  o.push(`</g><rect x="0" y="${FY}" width="${W}" height="${H - FY}" fill="#030406"/><rect x="${FX - 140}" y="${FY - 4}" width="280" height="6" fill="#030406"/>`);
 
-  // the throw: batarang leaves the chest, spins, grows toward the viewer, cracks the glass
-  o.push(`<g transform="translate(515 318)"><g class="fly"><g class="spin"><use href="#bat" xlink:href="#bat" fill="#070b12" stroke="#a9b8cb" stroke-width="1.2"/></g></g></g>
-<g class="crack" transform="translate(760 190)" fill="none" stroke="#e6ecf3" stroke-width="2" stroke-linecap="round">
-<path d="M0,0 L-70,-40 L-120,-36 M0,0 L-30,-90 L-20,-150 M0,0 L60,-70 L120,-80 M0,0 L90,20 L160,10 M0,0 L50,90 L60,160 M0,0 L-40,70 L-110,100 M0,0 L-90,10"/>
-<path d="M-40,-22 L-18,-50 M30,-36 L50,6 M44,48 L-20,38" stroke-width="1.2" opacity=".7"/></g>
+  // the figure: tall, lean, cape hanging, short ears; arm swings out of the cape to throw
+  const arm = `<g transform="translate(40 -236)"><g class="arm"><path d="M-8,0 L8,0 L7,58 L6,92 L9,100 L4,112 L-5,112 L-8,100 L-6,92 L-7,58 Z" fill="#06070a" stroke="#d23a36" stroke-width="1.3" stroke-opacity=".7"/>
+<path d="M6,62 l9,-6 l-5,10 M6,72 l10,-5 l-6,10 M6,82 l9,-4 l-6,9" fill="#050609"/><path d="M8,4 L7,58 L6,92" fill="none" stroke="#d23a36" stroke-width="1.2" opacity=".55"/></g></g>`;
+  const fig = `<g transform="translate(${FX} ${FY}) scale(${FS})">
+${arm}
+<g class="cape"><path d="M-12,-264 C-24,-258 -36,-254 -44,-246 C-52,-238 -54,-222 -54,-206 L-60,-120 L-66,-10 L-54,-22 L-44,-8 L-32,-20 L-22,-10 L-20,0 L-6,0 L-5,-14 L5,-14 L6,0 L20,0 L22,-10 L32,-20 L44,-8 L54,-22 L66,-10 L60,-120 L54,-206 C54,-222 52,-238 44,-246 C36,-254 24,-258 12,-264 Z" fill="#050609"/>
+<path d="M44,-246 C52,-238 54,-222 54,-206 L60,-120 L66,-10" fill="none" stroke="url(#rim)" stroke-width="2.4"/>
+<path d="M-44,-246 C-52,-238 -54,-222 -54,-206 L-60,-120 L-66,-10" fill="none" stroke="#5c6b80" stroke-width="1" opacity=".35"/>
+<path d="M-30,-244 C-28,-180 -27,-100 -24,-16 M30,-244 C28,-180 27,-100 24,-16" fill="none" stroke="#11141b" stroke-width="1.4"/>
+<path d="M-28,-242 C-14,-248 14,-248 28,-242 L26,-120 L-26,-120 Z" fill="#0a0c11"/>
+<path d="M-26,-224 L-9,-215 L-4,-224 L0,-217 L4,-224 L9,-215 L26,-224 L13,-208 L5,-211 L0,-199 L-5,-211 L-13,-208 Z" fill="#14171f" stroke="#2b1012" stroke-width=".8"/>
+<rect x="-26" y="-176" width="52" height="7" fill="#101319"/>
+<path d="M26,-240 L26,-120" stroke="#d23a36" stroke-width="1" opacity=".35"/></g>
+<path d="M-13,-272 L-14,-296 L-11,-316 L-6,-302 L6,-302 L11,-316 L14,-296 L13,-272 L8,-262 L-8,-262 Z" fill="#050609"/>
+<path d="M11,-316 L14,-296 L13,-272 L8,-262" fill="none" stroke="#d23a36" stroke-width="1.3" opacity=".75"/>
+<g class="eyes" filter="url(#glow)"><path d="M-8,-286 L-2,-284" stroke="#e8eef5" stroke-width="1.6" stroke-linecap="round"/><path d="M2,-284 L8,-286" stroke="#e8eef5" stroke-width="1.6" stroke-linecap="round"/></g>
+</g>`;
+  o.push(fig);
+
+  // the batarang: released from the fist at the end of the swing, flies at the viewer, cracks the glass
+  const rel = [FX + FS * (40 + 106), FY + FS * (-236 - 12)]; // fist position when arm points right
+  o.push(`<g transform="translate(${rel[0].toFixed(0)} ${rel[1].toFixed(0)})"><g class="fly"><g class="spin"><use href="#rang" xlink:href="#rang" fill="#040507" stroke="#d23a36" stroke-width="1.4"/></g></g></g>
+<g class="crack" fill="none" stroke="#e6ecf3" stroke-width="2" stroke-linecap="round">
+<path d="M0,0 L-70,-40 L-130,-36 M0,0 L-30,-90 L-20,-160 M0,0 L60,-70 L130,-84 M0,0 L95,18 L170,8 M0,0 L50,90 L64,170 M0,0 L-40,70 L-120,104 M0,0 L-96,10"/>
+<path d="M-40,-22 L-18,-50 M30,-36 L52,6 M44,48 L-20,38 M-60,36 L-30,10" stroke-width="1.2" opacity=".7"/></g>
 <rect width="${W}" height="${H}" fill="#e6ecf3" class="hit"/>`);
 
   const drops = [];
-  for (let i = 0; i < 90; i++) { const x = r() * (W + 40), y = -60 + r() * (H + 60); drops.push(`<line x1="${x | 0}" y1="${y | 0}" x2="${(x - 4) | 0}" y2="${(y + 16) | 0}"/>`); }
-  o.push(`<g stroke="#a9b8cb" stroke-width=".7" opacity=".14"><g class="rain">${drops.join('')}</g></g>`);
+  for (let i = 0; i < 170; i++) { const x = r() * (W + 60), y = -80 + r() * (H + 80); drops.push(`<line x1="${x | 0}" y1="${y | 0}" x2="${(x - 6) | 0}" y2="${(y + 22) | 0}"/>`); }
+  o.push(`<g stroke="#9aa7b8" stroke-width=".8" opacity=".2"><g class="rain">${drops.join('')}</g></g>`);
+  o.push(`<rect width="${W}" height="${H}" fill="#cfd8e6" class="flash"/>`);
+  // vignette
+  o.push(`<radialGradient id="vig" cx=".5" cy=".5" r=".75"><stop offset=".55" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".75"/></radialGradient><rect width="${W}" height="${H}" fill="url(#vig)"/>`);
 
   // name + live numbers
-  o.push(label(560, 330, `${USER}`));
-  o.push(`<g>${bitmap('YOUSSEF', 560, 344, 8, C.bright, true)}</g>`);
+  o.push(label(48, 52, `${USER}`));
+  o.push(`<g>${bitmap('YOUSSEF', 48, 66, 8, C.bright, true)}</g>`);
   const stat = (y, k, v, unit) => `${label(1010, y, k)}${T(1010, y + 30, v, 28, C.bright, 'font-weight="700"')}${unit ? T(1014 + v.length * 17.3, y + 30, unit, 11, C.dim) : ''}`;
-  o.push(`<rect x="992" y="300" width="190" height="122" fill="#060a10" opacity=".6"/>`);
-  o.push(stat(322, 'streak', String(streak), 'days') + stat(374, `${thisYear}`, fmt(yearTotal), 'commits'));
-  o.push(`<rect x="0" y="${H - 1}" width="${W}" height="1" fill="${C.line}"/>`);
+  o.push(stat(330, 'streak', String(streak), 'days') + stat(382, `${thisYear}`, fmt(yearTotal), 'commits'));
 
+  const T0 = 10; // seconds per loop
   const style = `.cloud{animation:drift var(--d) linear infinite}@keyframes drift{from{transform:translateX(-400px)}to{transform:translateX(1500px)}}
-.rain{animation:rain .7s linear infinite}@keyframes rain{from{transform:translate(0,-60px)}to{transform:translate(-15px,0)}}
+.rain{animation:rain .55s linear infinite}@keyframes rain{from{transform:translate(0,-80px)}to{transform:translate(-22px,0)}}
 .flap{transform-box:fill-box;transform-origin:center;animation:flap .3s ease-in-out infinite alternate}@keyframes flap{to{transform:scaleY(.25)}}
+.win{animation:win var(--d) ease-in-out infinite;animation-delay:var(--o)}@keyframes win{0%,40%,100%{opacity:.6}50%,90%{opacity:.05}}
 .px{animation:px .5s steps(2) both}@keyframes px{from{opacity:0}to{opacity:1}}
-.branch{transform-origin:0 40px;animation:creak 7s ease-in-out infinite}@keyframes creak{50%{transform:rotate(.8deg)}}
-.bust{transform-origin:350px 460px;animation:bust 9s cubic-bezier(.3,0,.2,1) infinite}
-@keyframes bust{0%,48%,70%,100%{transform:none}52%{transform:translateX(-10px) rotate(-1.5deg)}56%{transform:translateX(14px) rotate(1deg)}62%{transform:translateX(4px)}}
-.fly{opacity:0;animation:fly 9s infinite}
-@keyframes fly{0%,54%{opacity:0;transform:translate(0,0) scale(.35)}55%{opacity:1;transform:translate(0,0) scale(.35);animation-timing-function:cubic-bezier(.5,0,1,.6)}68%{opacity:1;transform:translate(245px,-128px) scale(4.2)}69%,100%{opacity:0;transform:translate(245px,-128px) scale(4.6)}}
-.spin{animation:spin .45s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}
-.crack{opacity:0;animation:crack 9s infinite}@keyframes crack{0%,67.9%{opacity:0;transform:translate(760px,190px) scale(.4)}68%{opacity:1;transform:translate(760px,190px) scale(1)}86%{opacity:.8}94%,100%{opacity:0;transform:translate(760px,190px) scale(1)}}
-.hit{opacity:0;animation:hit 9s infinite}@keyframes hit{0%,67.9%,72%,100%{opacity:0}68%{opacity:.55}}`;
-  return svg(H, `${USER}: comic-style Batman in profile against a pale moon, a swarm of bats, and a batarang thrown at the screen. ${streak}-day streak, ${yearTotal} contributions in ${thisYear}.`, o.join('\n'), style);
+.flare{animation:flare 6s ease-in-out infinite}@keyframes flare{50%{opacity:.75}}
+.flash{opacity:0;animation:flash 13s infinite}@keyframes flash{0%,31%,36%,100%{opacity:0}32%{opacity:.22}33%{opacity:.03}34%{opacity:.14}}
+.eyes{animation:eyes ${T0}s infinite}@keyframes eyes{0%,46%,64%,100%{opacity:.55}50%,60%{opacity:1}}
+.cape{transform-box:fill-box;transform-origin:50% 0;animation:cape ${T0}s ease-in-out infinite}
+@keyframes cape{0%,100%{transform:skewX(0)}20%{transform:skewX(1.5deg)}40%{transform:skewX(-1deg)}52%{transform:skewX(2.5deg) scaleX(1.03)}58%{transform:skewX(-3deg) scaleX(1.05)}70%{transform:skewX(0)}}
+.arm{transform:rotate(0deg);animation:arm ${T0}s infinite}
+@keyframes arm{0%,48%{transform:rotate(0deg)}54%{transform:rotate(-160deg);animation-timing-function:cubic-bezier(.6,0,.9,.4)}58%{transform:rotate(-90deg)}60%{transform:rotate(-70deg)}66%{transform:rotate(-80deg)}76%,100%{transform:rotate(0deg)}}
+.fly{opacity:0;animation:fly ${T0}s infinite}
+@keyframes fly{0%,57.9%{opacity:0;transform:translate(0,0) scale(.22)}58%{opacity:1;transform:translate(0,0) scale(.22);animation-timing-function:cubic-bezier(.45,0,1,.55)}70%{opacity:1;transform:translate(${(FX - rel[0]).toFixed(0)}px,${(210 - rel[1]).toFixed(0)}px) scale(6)}70.1%,100%{opacity:0;transform:translate(${(FX - rel[0]).toFixed(0)}px,${(210 - rel[1]).toFixed(0)}px) scale(6)}}
+.spin{animation:spin .35s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}
+.crack{opacity:0;animation:crack ${T0}s infinite}@keyframes crack{0%,69.9%{opacity:0;transform:translate(${FX}px,210px) scale(.3)}70%{opacity:1;transform:translate(${FX}px,210px) scale(1)}88%{opacity:.85}96%,100%{opacity:0;transform:translate(${FX}px,210px) scale(1)}}
+.hit{opacity:0;animation:hit ${T0}s infinite}@keyframes hit{0%,69.9%,73%,100%{opacity:0}70%{opacity:.5}}`;
+  return svg(H, `${USER}: Batman standing in the rain, lit red from behind, throws a batarang at the screen. ${streak}-day streak, ${yearTotal} contributions in ${thisYear}.`, o.join('\n'), style);
 }
 
 // ---------- 2. signal: last 120 days ----------
@@ -281,7 +290,7 @@ function skyline() {
       const t = .2 + r() * .55, [wx, wy] = P(w0 + (w1 - w0) * t, d1, 6 + k * 9);
       win += `<rect x="${wx.toFixed(1)}" y="${wy.toFixed(1)}" width="2" height="3" fill="#d9e2ee" opacity="${(.35 + r() * .5).toFixed(2)}"${r() < .3 ? ` class="win" style="animation-delay:-${(r() * 9).toFixed(1)}s"` : ''}/>`;
     }
-    o.push(`<g class="b" style="animation-delay:${(c.w * .025).toFixed(3)}s"><title>${c.date}: ${c.count}</title><polygon points="${left}" fill="${c.count ? '#0d1520' : '#0b111a'}"/><polygon points="${right}" fill="${c.count ? '#1a273b' : '#0b111a'}"/><polygon points="${top}" fill="${isPeak ? C.gold : c.count ? '#33486a' : '#101826'}"/>${win}</g>`);
+    o.push(`<g class="b" style="animation-delay:${(c.w * .025).toFixed(3)}s"><title>${c.date}: ${c.count}</title><polygon points="${left}" fill="${c.count ? '#0b0d12' : '#08090c'}"/><polygon points="${right}" fill="${c.count ? '#141821' : '#08090c'}"/><polygon points="${top}" fill="${isPeak ? C.gold : c.count ? '#262d39' : '#0c0e13'}"/>${win}</g>`);
   });
   o.push(`<g transform="translate(${px.toFixed(1)} ${(py + 2).toFixed(1)}) scale(.3)" fill="${C.black}" class="fig">${FIGURE('cape')}</g>`);
   return svg(H, `Skyline: the last 12 months of contributions as a night city. Peak ${peak.date} with ${peak.count}.`, o.join('\n'),
@@ -299,7 +308,7 @@ function tools() {
   list.forEach((t, i) => {
     const w = t.length * 8.4 + 30;
     if (x + w > W - 48) { x = 48; y += 46; }
-    o.push(`<g class="chip" style="animation-delay:${(i * .09).toFixed(2)}s"><rect x="${x}" y="${y}" width="${w.toFixed(0)}" height="32" fill="none" stroke="#253246"/>${T(x + 15, y + 21, t, 14, C.text)}</g>`);
+    o.push(`<g class="chip" style="animation-delay:${(i * .09).toFixed(2)}s"><rect x="${x}" y="${y}" width="${w.toFixed(0)}" height="32" fill="none" stroke="#1e2430"/>${T(x + 15, y + 21, t, 14, C.text)}</g>`);
     x += w + 10;
   });
   return svg(H, `Tools: ${list.join(', ')}.`, o.join('\n'),
