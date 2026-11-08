@@ -1,17 +1,17 @@
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1200 170" width="1200" height="170" role="img" aria-label="Tools: java, python, javascript, typescript, c++, c#, react, node, spring, fastapi, supabase, postgres, git.">
 <style>text{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace}.chip{animation:on 1.4s steps(1) both}@keyframes on{0%{opacity:0}30%{opacity:.6}38%{opacity:.1}52%,100%{opacity:1}}@media (prefers-reduced-motion:reduce){*{animation:none!important}}</style>
-<rect width="1200" height="170" fill="#07080c"/><text x="48" y="40" font-size="11" fill="#646f80" letter-spacing="2">TOOLS</text>
-<g class="chip" style="animation-delay:0.00s"><rect x="48" y="64" width="64" height="32" fill="none" stroke="#1e2430"/><text x="63" y="85" font-size="14" fill="#bfc8d4" >java</text></g>
-<g class="chip" style="animation-delay:0.09s"><rect x="121.6" y="64" width="80" height="32" fill="none" stroke="#1e2430"/><text x="136.6" y="85" font-size="14" fill="#bfc8d4" >python</text></g>
-<g class="chip" style="animation-delay:0.18s"><rect x="212" y="64" width="114" height="32" fill="none" stroke="#1e2430"/><text x="227" y="85" font-size="14" fill="#bfc8d4" >javascript</text></g>
-<g class="chip" style="animation-delay:0.27s"><rect x="336" y="64" width="114" height="32" fill="none" stroke="#1e2430"/><text x="351" y="85" font-size="14" fill="#bfc8d4" >typescript</text></g>
-<g class="chip" style="animation-delay:0.36s"><rect x="460" y="64" width="55" height="32" fill="none" stroke="#1e2430"/><text x="475" y="85" font-size="14" fill="#bfc8d4" >c++</text></g>
-<g class="chip" style="animation-delay:0.45s"><rect x="525.2" y="64" width="47" height="32" fill="none" stroke="#1e2430"/><text x="540.2" y="85" font-size="14" fill="#bfc8d4" >c#</text></g>
-<g class="chip" style="animation-delay:0.54s"><rect x="582" y="64" width="72" height="32" fill="none" stroke="#1e2430"/><text x="597" y="85" font-size="14" fill="#bfc8d4" >react</text></g>
-<g class="chip" style="animation-delay:0.63s"><rect x="664" y="64" width="64" height="32" fill="none" stroke="#1e2430"/><text x="679" y="85" font-size="14" fill="#bfc8d4" >node</text></g>
-<g class="chip" style="animation-delay:0.72s"><rect x="737.6" y="64" width="80" height="32" fill="none" stroke="#1e2430"/><text x="752.6" y="85" font-size="14" fill="#bfc8d4" >spring</text></g>
-<g class="chip" style="animation-delay:0.81s"><rect x="828" y="64" width="89" height="32" fill="none" stroke="#1e2430"/><text x="843" y="85" font-size="14" fill="#bfc8d4" >fastapi</text></g>
-<g class="chip" style="animation-delay:0.90s"><rect x="926.8" y="64" width="97" height="32" fill="none" stroke="#1e2430"/><text x="941.8" y="85" font-size="14" fill="#bfc8d4" >supabase</text></g>
-<g class="chip" style="animation-delay:0.99s"><rect x="1034" y="64" width="97" height="32" fill="none" stroke="#1e2430"/><text x="1049" y="85" font-size="14" fill="#bfc8d4" >postgres</text></g>
-<g class="chip" style="animation-delay:1.08s"><rect x="48" y="110" width="55" height="32" fill="none" stroke="#1e2430"/><text x="63" y="131" font-size="14" fill="#bfc8d4" >git</text></g>
-<rect x=".5" y=".5" width="1199" height="169" fill="none" stroke="#161a22"/></svg>
+<rect width="1200" height="170" fill="#070b11"/><text x="48" y="40" font-size="11" fill="#64748a" letter-spacing="2">TOOLS</text>
+<g class="chip" style="animation-delay:0.00s"><rect x="48" y="64" width="64" height="32" fill="none" stroke="#1c2738"/><text x="63" y="85" font-size="14" fill="#bfcad8" >java</text></g>
+<g class="chip" style="animation-delay:0.09s"><rect x="121.6" y="64" width="80" height="32" fill="none" stroke="#1c2738"/><text x="136.6" y="85" font-size="14" fill="#bfcad8" >python</text></g>
+<g class="chip" style="animation-delay:0.18s"><rect x="212" y="64" width="114" height="32" fill="none" stroke="#1c2738"/><text x="227" y="85" font-size="14" fill="#bfcad8" >javascript</text></g>
+<g class="chip" style="animation-delay:0.27s"><rect x="336" y="64" width="114" height="32" fill="none" stroke="#1c2738"/><text x="351" y="85" font-size="14" fill="#bfcad8" >typescript</text></g>
+<g class="chip" style="animation-delay:0.36s"><rect x="460" y="64" width="55" height="32" fill="none" stroke="#1c2738"/><text x="475" y="85" font-size="14" fill="#bfcad8" >c++</text></g>
+<g class="chip" style="animation-delay:0.45s"><rect x="525.2" y="64" width="47" height="32" fill="none" stroke="#1c2738"/><text x="540.2" y="85" font-size="14" fill="#bfcad8" >c#</text></g>
+<g class="chip" style="animation-delay:0.54s"><rect x="582" y="64" width="72" height="32" fill="none" stroke="#1c2738"/><text x="597" y="85" font-size="14" fill="#bfcad8" >react</text></g>
+<g class="chip" style="animation-delay:0.63s"><rect x="664" y="64" width="64" height="32" fill="none" stroke="#1c2738"/><text x="679" y="85" font-size="14" fill="#bfcad8" >node</text></g>
+<g class="chip" style="animation-delay:0.72s"><rect x="737.6" y="64" width="80" height="32" fill="none" stroke="#1c2738"/><text x="752.6" y="85" font-size="14" fill="#bfcad8" >spring</text></g>
+<g class="chip" style="animation-delay:0.81s"><rect x="828" y="64" width="89" height="32" fill="none" stroke="#1c2738"/><text x="843" y="85" font-size="14" fill="#bfcad8" >fastapi</text></g>
+<g class="chip" style="animation-delay:0.90s"><rect x="926.8" y="64" width="97" height="32" fill="none" stroke="#1c2738"/><text x="941.8" y="85" font-size="14" fill="#bfcad8" >supabase</text></g>
+<g class="chip" style="animation-delay:0.99s"><rect x="1034" y="64" width="97" height="32" fill="none" stroke="#1c2738"/><text x="1049" y="85" font-size="14" fill="#bfcad8" >postgres</text></g>
+<g class="chip" style="animation-delay:1.08s"><rect x="48" y="110" width="55" height="32" fill="none" stroke="#1c2738"/><text x="63" y="131" font-size="14" fill="#bfcad8" >git</text></g>
+<rect x=".5" y=".5" width="1199" height="169" fill="none" stroke="#151d29"/></svg>

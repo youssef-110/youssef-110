@@ -8,10 +8,10 @@ const OUT = new URL('../assets/', import.meta.url);
 const W = 1200;
 
 const C = {
-  // near-black night, cold steel greys, one red accent
-  bg: '#05060a', panel: '#07080c', line: '#161a22', dim: '#646f80', text: '#bfc8d4',
-  bright: '#e6ecf3', gold: '#c0302f', black: '#040507',
-  ramp: ['#0d1016', '#1a1f28', '#2c3440', '#556274', '#a9b5c4'],
+  // from the profile picture: near-black slate night, moon-pale steel, maroon accent
+  bg: '#05080d', panel: '#070b11', line: '#151d29', dim: '#64748a', text: '#bfcad8',
+  bright: '#e3e9f0', gold: '#c4475a', black: '#04070b',
+  ramp: ['#0c121a', '#18222f', '#2a3a4f', '#4f6886', '#a9bad0'],
 };
 const MONO = "ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace";
 
@@ -105,99 +105,109 @@ function bitmap(text, x, y, px, fill, animate, seed = 1) {
   return out;
 }
 
-// ---------- 1. title: batman in the rain ----------
+// ---------- 1. title: binary batman ----------
 function title() {
-  const H = 460, r = rng(7), o = [];
-  const FX = 600, FY = 446, FS = 1.22; // figure placement
+  const H = 460, r = rng(42), o = [];
+  // front-facing cowl bust, right half (x>=0), top of ears at y=0; mirrored to make the outline
+  const half = [[0, 74], [28, 80], [44, 34], [60, 80], [68, 104], [72, 142], [70, 172], [58, 204], [74, 214], [98, 232], [150, 262], [190, 290], [205, 340], [212, 470]];
+  const FS = 1.0, FX = 600, FY = 6;
+  const P = ([x, y]) => [FX + x * FS, FY + y * FS];
+  const outline = [...half, ...half.slice().reverse().map(([x, y]) => [-x, y])].map(P);
+  const path = pts => 'M' + pts.map(p => p.map(n => n.toFixed(1)).join(',')).join(' L') + ' Z';
+  const mirror = pts => [...pts, ...pts.slice().reverse().map(([x, y]) => [-x, y])];
+  const eyeR = [[9, 142], [42, 128], [45, 135], [12, 150]].map(P), eyeL = [[-9, 142], [-42, 128], [-45, 135], [-12, 150]].map(P);
+  // where the cowl ends and the lower face shows
+  const cowlEdge = [[62, 158], [52, 192], [32, 220], [0, 228], [-32, 220], [-52, 192], [-62, 158]];
+  const mouth = [[-14, 210], [-4, 212], [4, 212], [14, 210]];
+  // chest emblem: sharp, wings down
+  const emb = [[0, 318], [7, 312], [11, 300], [16, 312], [48, 308], [82, 326], [60, 328], [46, 342], [30, 337], [13, 352], [0, 376]];
+  const emblem = mirror(emb).map(P);
+  const shadow = [
+    [[0, 108], [0, 176]], [[6, 118], [40, 108]], [[-6, 118], [-40, 108]],            // nose ridge, brow
+    [[74, 214], [40, 242], [0, 254], [-40, 242], [-74, 214]],                        // armored collar
+    [[150, 262], [112, 300], [104, 360], [118, 430]], [[-150, 262], [-112, 300], [-104, 360], [-118, 430]],  // chest plates
+    [[0, 384], [0, 460]], [[60, 390], [24, 420]], [[-60, 390], [-24, 420]], [[180, 300], [168, 360]], [[-180, 300], [-168, 360]],
+  ];
+  const line = pts => 'M' + pts.map(P).map(p => p.map(n => n.toFixed(1)).join(',')).join(' L');
+
+  // binary rows: one <text> per row with explicit x per column so columns line up in any font
+  const rows = (x0, x1, cw, y0, y1, rh, fillProb, period, streaky) => {
+    const cols = []; for (let x = x0; x < x1; x += cw) cols.push(x);
+    const n = Math.ceil((y1 - y0) / rh) + period;
+    const colSeq = cols.map(() => {
+      const seq = []; let on = r() < .5;
+      while (seq.length < period) {
+        const len = on ? 4 + (r() * 12 | 0) : 2 + (r() * 10 | 0);
+        for (let k = 0; k < len && seq.length < period; k++) seq.push(!streaky || on ? (r() < fillProb ? (r() < .5 ? '0' : '1') : ' ') : ' ');
+        on = !on;
+      }
+      return seq;
+    });
+    const xs = cols.join(' ');
+    let s = '';
+    for (let i = 0; i < n; i++) s += `<text x="${xs}" y="${(y0 - period * rh + i * rh).toFixed(0)}">${colSeq.map(q => q[i % period]).join('').replace(/ /g, '&#160;')}</text>`;
+    return s;
+  };
+  const bb = [FX - 272, FX + 272];
   o.push(`<defs>
-<linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#040508"/><stop offset=".7" stop-color="#090b11"/><stop offset="1" stop-color="#0f0b0e"/></linearGradient>
-<radialGradient id="flare" cx=".5" cy=".5"><stop offset="0" stop-color="#c22a2a" stop-opacity=".55"/><stop offset=".35" stop-color="#7a1418" stop-opacity=".32"/><stop offset="1" stop-color="#3a0a0c" stop-opacity="0"/></radialGradient>
-<radialGradient id="mg"><stop offset=".55" stop-color="#9fb0c4" stop-opacity=".12"/><stop offset="1" stop-color="#9fb0c4" stop-opacity="0"/></radialGradient>
-<radialGradient id="moon" cx=".45" cy=".42"><stop offset="0" stop-color="#b9c4d2"/><stop offset="1" stop-color="#7f8ea3"/></radialGradient>
-<pattern id="dots" width="6" height="6" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r=".8" fill="#000" opacity=".5"/></pattern>
-<linearGradient id="rim" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#d23a36" stop-opacity="0"/><stop offset="1" stop-color="#d23a36" stop-opacity=".9"/></linearGradient>
-<filter id="blur" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="7"/></filter>
-<filter id="glow" x="-200%" y="-200%" width="500%" height="500%"><feGaussianBlur stdDeviation="2.2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
-<path id="bat" d="${BAT}"/>
-<path id="rang" d="M-60,0 C-46,-6 -30,-8 -16,-6 L-8,-14 L-4,-6 L4,-6 L8,-14 L16,-6 C30,-8 46,-6 60,0 C44,0 30,4 18,12 C10,6 4,6 0,14 C-4,6 -10,6 -18,12 C-30,4 -44,0 -60,0Z"/></defs>
-<rect width="${W}" height="${H}" fill="url(#sky)"/>`);
-  for (let i = 0; i < 50; i++) o.push(`<circle cx="${(r() * W) | 0}" cy="${(r() * 220) | 0}" r="${[.5, .8, 1][(r() * 3) | 0]}" fill="#aab6c6" opacity="${(.08 + r() * .3).toFixed(2)}"/>`);
-  // moon behind cloud, top right; bats cross it
-  o.push(`<circle cx="930" cy="120" r="150" fill="url(#mg)"/><circle cx="930" cy="120" r="78" fill="url(#moon)" opacity=".75"/><circle cx="930" cy="120" r="78" fill="url(#dots)"/>`);
-  for (const [y, d, dl, s, op] of [[150, 120, -20, 1.8, .95], [70, 160, -90, 1.4, .8], [190, 140, -50, 2.2, .9]])
-    o.push(`<g class="cloud" style="--d:${d}s;animation-delay:${dl}s" opacity="${op}"><g transform="translate(0 ${y}) scale(${s})" fill="#0b0e14" filter="url(#blur)"><ellipse rx="140" ry="20"/><ellipse cx="60" cy="-12" rx="80" ry="18"/><ellipse cx="-70" cy="4" rx="90" ry="14"/></g></g>`);
-  for (let i = 0; i < 18; i++) {
-    const dur = 9 + r() * 5, dl = -(r() * 14).toFixed(2), sc = (.05 + r() * .07).toFixed(3), jy = (r() * 60 - 30) | 0;
-    o.push(`<g><animateMotion dur="${dur.toFixed(1)}s" begin="${dl}s" repeatCount="indefinite" path="M700,${170 + jy} C820,${110 + jy} 960,${150 + jy} 1260,${40 + jy}"/><g transform="scale(${sc})"><use href="#bat" xlink:href="#bat" class="flap" style="animation-duration:${(.2 + r() * .15).toFixed(2)}s" fill="#05070b"/></g></g>`);
-  }
-  // red flare behind the figure
-  o.push(`<ellipse class="flare" cx="${FX}" cy="300" rx="360" ry="230" fill="url(#flare)"/>`);
-  // skyline, almost black, a few red and pale lights
-  let x = 0; const far = [];
-  while (x < W) { const w = 36 + (r() * 50 | 0), h = 90 + (r() * 120 | 0); far.push(`<rect x="${x}" y="${H - h}" width="${w}" height="${h}"/>`); x += w + (r() * 5 | 0); }
-  o.push(`<g fill="#07080c">${far.join('')}</g><g>`);
-  for (let i = 0; i < 70; i++) o.push(`<rect x="${(r() * W) | 0}" y="${(H - 30 - r() * 150) | 0}" width="3" height="5" fill="${r() < .25 ? '#c0392b' : '#8d99aa'}" opacity="${(.25 + r() * .45).toFixed(2)}"${r() < .3 ? ` class="win" style="--d:${8 + (r() * 10 | 0)}s;--o:-${r() * 12 | 0}s"` : ''}/>`);
-  o.push(`</g><rect x="0" y="${FY}" width="${W}" height="${H - FY}" fill="#030406"/><rect x="${FX - 140}" y="${FY - 4}" width="280" height="6" fill="#030406"/>`);
-
-  // the figure: tall, lean, cape hanging, short ears; arm swings out of the cape to throw
-  const arm = `<g transform="translate(40 -236)"><g class="arm"><path d="M-8,0 L8,0 L7,58 L6,92 L9,100 L4,112 L-5,112 L-8,100 L-6,92 L-7,58 Z" fill="#06070a" stroke="#d23a36" stroke-width="1.3" stroke-opacity=".7"/>
-<path d="M6,62 l9,-6 l-5,10 M6,72 l10,-5 l-6,10 M6,82 l9,-4 l-6,9" fill="#050609"/><path d="M8,4 L7,58 L6,92" fill="none" stroke="#d23a36" stroke-width="1.2" opacity=".55"/></g></g>`;
-  const fig = `<g transform="translate(${FX} ${FY}) scale(${FS})">
-${arm}
-<g class="cape"><path d="M-12,-264 C-24,-258 -36,-254 -44,-246 C-52,-238 -54,-222 -54,-206 L-60,-120 L-66,-10 L-54,-22 L-44,-8 L-32,-20 L-22,-10 L-20,0 L-6,0 L-5,-14 L5,-14 L6,0 L20,0 L22,-10 L32,-20 L44,-8 L54,-22 L66,-10 L60,-120 L54,-206 C54,-222 52,-238 44,-246 C36,-254 24,-258 12,-264 Z" fill="#050609"/>
-<path d="M44,-246 C52,-238 54,-222 54,-206 L60,-120 L66,-10" fill="none" stroke="url(#rim)" stroke-width="2.4"/>
-<path d="M-44,-246 C-52,-238 -54,-222 -54,-206 L-60,-120 L-66,-10" fill="none" stroke="#5c6b80" stroke-width="1" opacity=".35"/>
-<path d="M-30,-244 C-28,-180 -27,-100 -24,-16 M30,-244 C28,-180 27,-100 24,-16" fill="none" stroke="#11141b" stroke-width="1.4"/>
-<path d="M-28,-242 C-14,-248 14,-248 28,-242 L26,-120 L-26,-120 Z" fill="#0a0c11"/>
-<path d="M-26,-224 L-9,-215 L-4,-224 L0,-217 L4,-224 L9,-215 L26,-224 L13,-208 L5,-211 L0,-199 L-5,-211 L-13,-208 Z" fill="#14171f" stroke="#2b1012" stroke-width=".8"/>
-<rect x="-26" y="-176" width="52" height="7" fill="#101319"/>
-<path d="M26,-240 L26,-120" stroke="#d23a36" stroke-width="1" opacity=".35"/></g>
-<path d="M-13,-272 L-14,-296 L-11,-316 L-6,-302 L6,-302 L11,-316 L14,-296 L13,-272 L8,-262 L-8,-262 Z" fill="#050609"/>
-<path d="M11,-316 L14,-296 L13,-272 L8,-262" fill="none" stroke="#d23a36" stroke-width="1.3" opacity=".75"/>
-<g class="eyes" filter="url(#glow)"><path d="M-8,-286 L-2,-284" stroke="#e8eef5" stroke-width="1.6" stroke-linecap="round"/><path d="M2,-284 L8,-286" stroke="#e8eef5" stroke-width="1.6" stroke-linecap="round"/></g>
-</g>`;
-  o.push(fig);
-
-  // the batarang: released from the fist at the end of the swing, flies at the viewer, cracks the glass
-  const rel = [FX + FS * (40 + 106), FY + FS * (-236 - 12)]; // fist position when arm points right
-  o.push(`<g transform="translate(${rel[0].toFixed(0)} ${rel[1].toFixed(0)})"><g class="fly"><g class="spin"><use href="#rang" xlink:href="#rang" fill="#040507" stroke="#d23a36" stroke-width="1.4"/></g></g></g>
-<g class="crack" fill="none" stroke="#e6ecf3" stroke-width="2" stroke-linecap="round">
-<path d="M0,0 L-70,-40 L-130,-36 M0,0 L-30,-90 L-20,-160 M0,0 L60,-70 L130,-84 M0,0 L95,18 L170,8 M0,0 L50,90 L64,170 M0,0 L-40,70 L-120,104 M0,0 L-96,10"/>
-<path d="M-40,-22 L-18,-50 M30,-36 L52,6 M44,48 L-20,38 M-60,36 L-30,10" stroke-width="1.2" opacity=".7"/></g>
-<rect width="${W}" height="${H}" fill="#e6ecf3" class="hit"/>`);
-
-  const drops = [];
-  for (let i = 0; i < 170; i++) { const x = r() * (W + 60), y = -80 + r() * (H + 80); drops.push(`<line x1="${x | 0}" y1="${y | 0}" x2="${(x - 6) | 0}" y2="${(y + 22) | 0}"/>`); }
-  o.push(`<g stroke="#9aa7b8" stroke-width=".8" opacity=".2"><g class="rain">${drops.join('')}</g></g>`);
-  o.push(`<rect width="${W}" height="${H}" fill="#cfd8e6" class="flash"/>`);
-  // vignette
-  o.push(`<radialGradient id="vig" cx=".5" cy=".5" r=".75"><stop offset=".55" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".75"/></radialGradient><rect width="${W}" height="${H}" fill="url(#vig)"/>`);
+<clipPath id="fig"><path d="${path(outline)}"/></clipPath>
+<clipPath id="emb"><path d="${path(emblem)}"/></clipPath>
+<linearGradient id="shade" gradientUnits="userSpaceOnUse" x1="0" y1="${FY}" x2="0" y2="${H}"><stop offset="0" stop-color="#e3e9f0"/><stop offset=".45" stop-color="#8fa1b8"/><stop offset="1" stop-color="#1f2c3d"/></linearGradient>
+<radialGradient id="halo" cx=".5" cy=".42" r=".55"><stop offset="0" stop-color="#3a5274" stop-opacity=".4"/><stop offset=".6" stop-color="#1c2a3f" stop-opacity=".2"/><stop offset="1" stop-color="#000" stop-opacity="0"/></radialGradient>
+<radialGradient id="vig" cx=".5" cy=".5" r=".75"><stop offset=".55" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".8"/></radialGradient>
+<filter id="glow" x="-100%" y="-100%" width="300%" height="300%"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+<filter id="soft" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="6"/></filter>
+<g id="rainA" font-size="11">${rows(0, W, 14, 0, H, 14, .9, 40, true)}</g>
+<g id="dense" font-size="10">${rows(bb[0], bb[1], 8, FY, H, 10, .97, 30, false)}</g>
+<g id="embd" font-size="9">${rows(FX - 100, FX + 100, 7, FY + 280, FY + 380, 8, 1, 20, false)}</g>
+</defs>
+<rect width="${W}" height="${H}" fill="#05080d"/>
+<ellipse cx="${FX}" cy="230" rx="430" ry="300" fill="url(#halo)" class="halo"/>`);
+  // background rain, dim
+  o.push(`<g fill="#4a5a70" opacity=".25" style="font-family:${MONO}"><g class="rainA"><use href="#rainA" xlink:href="#rainA"/></g></g>`);
+  // the figure: dense scrolling code clipped to the bust, revealed by a scan line
+  o.push(`<g class="reveal-wrap"><g clip-path="url(#fig)"><g class="glitch">
+<rect x="${bb[0]}" y="0" width="544" height="${H}" fill="#070b11"/>
+<g fill="url(#shade)" style="font-family:${MONO}"><g class="dense"><use href="#dense" xlink:href="#dense"/></g></g>
+<g fill="none" stroke="#020304" stroke-linecap="round" stroke-linejoin="round">
+<path d="${line(cowlEdge)}" stroke-width="7"/>
+<path d="${line(mouth)}" stroke-width="3"/>
+${shadow.map(s => `<path d="${line(s)}" stroke-width="5"/>`).join('')}
+</g>
+<path d="${path(emblem)}" fill="#020304"/>
+<g clip-path="url(#emb)" fill="#d9506a" font-weight="700" style="font-family:${MONO}"><g class="embd"><use href="#embd" xlink:href="#embd"/></g></g>
+<path d="${path(eyeR)}" fill="#020304"/><path d="${path(eyeL)}" fill="#020304"/>
+</g></g>
+<path d="${path(outline)}" fill="none" stroke="#c9d3df" stroke-width="1.2" opacity=".35"/>
+<rect class="scan" x="${bb[0] - 20}" y="0" width="560" height="2" fill="#e6ecf3" opacity=".8"/></g>`);
+  o.push(`<g class="eyes" filter="url(#glow)"><path d="${path([[12, 142], [40, 130], [42, 134], [14, 147]].map(P))}" fill="#f4f7fb"/><path d="${path([[-12, 142], [-40, 130], [-42, 134], [-14, 147]].map(P))}" fill="#f4f7fb"/></g>`);
+  // glitch slices: copies of the figure band shifted sideways for a split second
+  for (const [y, h, dx, c] of [[110, 18, 14, '#c4475a'], [205, 10, -18, '#9fb0c4'], [330, 22, 22, '#c4475a']])
+    o.push(`<g class="slice" style="--dx:${dx}px"><clipPath id="sl${y}"><rect x="0" y="${FY + y}" width="${W}" height="${h}"/></clipPath><g clip-path="url(#sl${y})"><path d="${path(outline)}" fill="${c}" opacity=".35"/></g></g>`);
+  o.push(`<rect width="${W}" height="${H}" fill="url(#vig)"/>`);
+  // scanlines over everything
+  o.push(`<pattern id="scanl" width="4" height="3" patternUnits="userSpaceOnUse"><rect width="4" height="1" fill="#000"/></pattern><rect width="${W}" height="${H}" fill="url(#scanl)" opacity=".22"/>`);
 
   // name + live numbers
   o.push(label(48, 52, `${USER}`));
-  o.push(`<g>${bitmap('YOUSSEF', 48, 66, 8, C.bright, true)}</g>`);
-  const stat = (y, k, v, unit) => `${label(1010, y, k)}${T(1010, y + 30, v, 28, C.bright, 'font-weight="700"')}${unit ? T(1014 + v.length * 17.3, y + 30, unit, 11, C.dim) : ''}`;
+  o.push(`<g>${bitmap('YOUSSEF', 48, 66, 7, C.bright, true)}</g>`);
+  o.push(T(48, 150, '01111001 01101111 01110101', 11, C.dim, `letter-spacing="1"`));
+  const stat = (y, k, v, unit) => `${label(1000, y, k)}${T(1000, y + 30, v, 28, C.bright, 'font-weight="700"')}${unit ? T(1004 + v.length * 17.3, y + 30, unit, 11, C.dim) : ''}`;
   o.push(stat(330, 'streak', String(streak), 'days') + stat(382, `${thisYear}`, fmt(yearTotal), 'commits'));
 
-  const T0 = 10; // seconds per loop
-  const style = `.cloud{animation:drift var(--d) linear infinite}@keyframes drift{from{transform:translateX(-400px)}to{transform:translateX(1500px)}}
-.rain{animation:rain .55s linear infinite}@keyframes rain{from{transform:translate(0,-80px)}to{transform:translate(-22px,0)}}
-.flap{transform-box:fill-box;transform-origin:center;animation:flap .3s ease-in-out infinite alternate}@keyframes flap{to{transform:scaleY(.25)}}
-.win{animation:win var(--d) ease-in-out infinite;animation-delay:var(--o)}@keyframes win{0%,40%,100%{opacity:.6}50%,90%{opacity:.05}}
+  const style = `.rainA{animation:fall 11s steps(40) infinite}@keyframes fall{from{transform:translateY(0)}to{transform:translateY(${40 * 14}px)}}
+.dense{animation:fallD 18s steps(30) infinite}@keyframes fallD{to{transform:translateY(${30 * 10}px)}}
+.embd{animation:fallE 5s steps(20) infinite}@keyframes fallE{to{transform:translateY(${20 * 8}px)}}
 .px{animation:px .5s steps(2) both}@keyframes px{from{opacity:0}to{opacity:1}}
-.flare{animation:flare 6s ease-in-out infinite}@keyframes flare{50%{opacity:.75}}
-.flash{opacity:0;animation:flash 13s infinite}@keyframes flash{0%,31%,36%,100%{opacity:0}32%{opacity:.22}33%{opacity:.03}34%{opacity:.14}}
-.eyes{animation:eyes ${T0}s infinite}@keyframes eyes{0%,46%,64%,100%{opacity:.55}50%,60%{opacity:1}}
-.cape{transform-box:fill-box;transform-origin:50% 0;animation:cape ${T0}s ease-in-out infinite}
-@keyframes cape{0%,100%{transform:skewX(0)}20%{transform:skewX(1.5deg)}40%{transform:skewX(-1deg)}52%{transform:skewX(2.5deg) scaleX(1.03)}58%{transform:skewX(-3deg) scaleX(1.05)}70%{transform:skewX(0)}}
-.arm{transform:rotate(0deg);animation:arm ${T0}s infinite}
-@keyframes arm{0%,48%{transform:rotate(0deg)}54%{transform:rotate(-160deg);animation-timing-function:cubic-bezier(.6,0,.9,.4)}58%{transform:rotate(-90deg)}60%{transform:rotate(-70deg)}66%{transform:rotate(-80deg)}76%,100%{transform:rotate(0deg)}}
-.fly{opacity:0;animation:fly ${T0}s infinite}
-@keyframes fly{0%,57.9%{opacity:0;transform:translate(0,0) scale(.22)}58%{opacity:1;transform:translate(0,0) scale(.22);animation-timing-function:cubic-bezier(.45,0,1,.55)}70%{opacity:1;transform:translate(${(FX - rel[0]).toFixed(0)}px,${(210 - rel[1]).toFixed(0)}px) scale(6)}70.1%,100%{opacity:0;transform:translate(${(FX - rel[0]).toFixed(0)}px,${(210 - rel[1]).toFixed(0)}px) scale(6)}}
-.spin{animation:spin .35s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}
-.crack{opacity:0;animation:crack ${T0}s infinite}@keyframes crack{0%,69.9%{opacity:0;transform:translate(${FX}px,210px) scale(.3)}70%{opacity:1;transform:translate(${FX}px,210px) scale(1)}88%{opacity:.85}96%,100%{opacity:0;transform:translate(${FX}px,210px) scale(1)}}
-.hit{opacity:0;animation:hit ${T0}s infinite}@keyframes hit{0%,69.9%,73%,100%{opacity:0}70%{opacity:.5}}`;
-  return svg(H, `${USER}: Batman standing in the rain, lit red from behind, throws a batarang at the screen. ${streak}-day streak, ${yearTotal} contributions in ${thisYear}.`, o.join('\n'), style);
+.halo{animation:halo 5s steps(10) infinite}@keyframes halo{50%{opacity:.6}}
+.reveal-wrap{animation:reveal 2.4s cubic-bezier(.6,0,.2,1) both}@keyframes reveal{from{clip-path:inset(0 0 100% 0)}to{clip-path:inset(0 0 0 0)}}
+.scan{animation:scan 2.4s cubic-bezier(.6,0,.2,1) both, scanloop 9s steps(90) 2.4s infinite}
+@keyframes scan{from{transform:translateY(0);opacity:1}to{transform:translateY(${H}px);opacity:0}}
+@keyframes scanloop{0%{transform:translateY(0);opacity:0}5%{opacity:.6}40%{transform:translateY(${H}px);opacity:0}100%{transform:translateY(${H}px);opacity:0}}
+.eyes{animation:eyes 9s infinite}@keyframes eyes{0%,8%{opacity:0}12%,58%,66%,100%{opacity:.85}60%,64%{opacity:1;fill:#e0607a}61%,63%{opacity:.2}}
+.glitch{animation:glitch 9s steps(1) infinite}@keyframes glitch{0%,59%,66%,100%{transform:none}60%{transform:translateX(-7px) skewX(-3deg)}61%{transform:translateX(9px)}62%{transform:translateX(-3px) skewX(2deg)}63%{transform:translateX(5px)}64%{transform:none}65%{transform:translateX(-4px)}}
+.slice{opacity:0;animation:slice 9s steps(1) infinite}@keyframes slice{0%,59%,65%,100%{opacity:0;transform:none}60%{opacity:1;transform:translateX(var(--dx))}62%{opacity:1;transform:translateX(calc(var(--dx) * -1))}63%{opacity:0}64%{opacity:1;transform:translateX(var(--dx))}}`;
+  return svg(H, `${USER}: Batman's cowl and shoulders built from streaming binary code, glowing eyes and a red binary bat on his chest. ${streak}-day streak, ${yearTotal} contributions in ${thisYear}.`, o.join('\n'), style);
 }
 
 // ---------- 2. signal: last 120 days ----------
@@ -290,7 +300,7 @@ function skyline() {
       const t = .2 + r() * .55, [wx, wy] = P(w0 + (w1 - w0) * t, d1, 6 + k * 9);
       win += `<rect x="${wx.toFixed(1)}" y="${wy.toFixed(1)}" width="2" height="3" fill="#d9e2ee" opacity="${(.35 + r() * .5).toFixed(2)}"${r() < .3 ? ` class="win" style="animation-delay:-${(r() * 9).toFixed(1)}s"` : ''}/>`;
     }
-    o.push(`<g class="b" style="animation-delay:${(c.w * .025).toFixed(3)}s"><title>${c.date}: ${c.count}</title><polygon points="${left}" fill="${c.count ? '#0b0d12' : '#08090c'}"/><polygon points="${right}" fill="${c.count ? '#141821' : '#08090c'}"/><polygon points="${top}" fill="${isPeak ? C.gold : c.count ? '#262d39' : '#0c0e13'}"/>${win}</g>`);
+    o.push(`<g class="b" style="animation-delay:${(c.w * .025).toFixed(3)}s"><title>${c.date}: ${c.count}</title><polygon points="${left}" fill="${c.count ? '#0a0f17' : '#070b10'}"/><polygon points="${right}" fill="${c.count ? '#131c29' : '#070b10'}"/><polygon points="${top}" fill="${isPeak ? C.gold : c.count ? '#24324a' : '#0c1119'}"/>${win}</g>`);
   });
   o.push(`<g transform="translate(${px.toFixed(1)} ${(py + 2).toFixed(1)}) scale(.3)" fill="${C.black}" class="fig">${FIGURE('cape')}</g>`);
   return svg(H, `Skyline: the last 12 months of contributions as a night city. Peak ${peak.date} with ${peak.count}.`, o.join('\n'),
@@ -308,7 +318,7 @@ function tools() {
   list.forEach((t, i) => {
     const w = t.length * 8.4 + 30;
     if (x + w > W - 48) { x = 48; y += 46; }
-    o.push(`<g class="chip" style="animation-delay:${(i * .09).toFixed(2)}s"><rect x="${x}" y="${y}" width="${w.toFixed(0)}" height="32" fill="none" stroke="#1e2430"/>${T(x + 15, y + 21, t, 14, C.text)}</g>`);
+    o.push(`<g class="chip" style="animation-delay:${(i * .09).toFixed(2)}s"><rect x="${x}" y="${y}" width="${w.toFixed(0)}" height="32" fill="none" stroke="#1c2738"/>${T(x + 15, y + 21, t, 14, C.text)}</g>`);
     x += w + 10;
   });
   return svg(H, `Tools: ${list.join(', ')}.`, o.join('\n'),
