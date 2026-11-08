@@ -8,8 +8,10 @@ const OUT = new URL('../assets/', import.meta.url);
 const W = 1200;
 
 const C = {
-  bg: '#050608', panel: '#07080b', line: '#15181f', dim: '#5b616d', text: '#c9ccd3',
-  bright: '#eef0f4', gold: '#e8c547', black: '#020306',
+  // palette pulled from the profile picture: slate-blue night, pale moon, maroon cowl
+  bg: '#0a0f17', panel: '#0c121b', line: '#1c2636', dim: '#6c7a90', text: '#c3cddb',
+  bright: '#e6ecf3', gold: '#b4495a', black: '#060a10',
+  ramp: ['#111924', '#1f2c3d', '#344863', '#5e7898', '#b8c7dc'],
 };
 const MONO = "ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace";
 
@@ -103,66 +105,90 @@ function bitmap(text, x, y, px, fill, animate, seed = 1) {
   return out;
 }
 
-// ---------- 1. title: the night scene ----------
+// ---------- 1. title: the comic-cover scene ----------
 function title() {
   const H = 460, r = rng(7), o = [];
+  const MX = 830, MY = 205, MR = 200; // moon
   o.push(`<defs>
-<linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#030406"/><stop offset=".75" stop-color="#090d17"/><stop offset="1" stop-color="#0e1420"/></linearGradient>
-<radialGradient id="mg"><stop offset=".45" stop-color="#e8e4d4" stop-opacity=".13"/><stop offset="1" stop-color="#e8e4d4" stop-opacity="0"/></radialGradient>
-<radialGradient id="moon" cx=".42" cy=".4"><stop offset="0" stop-color="#ecE8da"/><stop offset="1" stop-color="#b9b4a0"/></radialGradient>
-<linearGradient id="beam" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#f3e7a8" stop-opacity="0"/><stop offset=".3" stop-color="#f3e7a8" stop-opacity=".06"/><stop offset="1" stop-color="#f3e7a8" stop-opacity=".17"/></linearGradient>
-<radialGradient id="spot"><stop offset="0" stop-color="#f6eab0" stop-opacity=".45"/><stop offset=".75" stop-color="#f6eab0" stop-opacity=".2"/><stop offset="1" stop-color="#f6eab0" stop-opacity="0"/></radialGradient>
-<filter id="blur" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="7"/></filter>
-<filter id="soft"><feGaussianBlur stdDeviation="1.5"/></filter>
+<linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0d1622"/><stop offset=".6" stop-color="#1a2a3f"/><stop offset="1" stop-color="#2a3e58"/></linearGradient>
+<radialGradient id="mg"><stop offset=".6" stop-color="#d5dde7" stop-opacity=".22"/><stop offset="1" stop-color="#d5dde7" stop-opacity="0"/></radialGradient>
+<radialGradient id="moon" cx=".45" cy=".42"><stop offset="0" stop-color="#e3e9f0"/><stop offset=".8" stop-color="#bfcad7"/><stop offset="1" stop-color="#a9b7c8"/></radialGradient>
+<pattern id="dots" width="7" height="7" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r=".9" fill="#2a3a52" opacity=".55"/><circle cx="5.5" cy="5" r=".6" fill="#2a3a52" opacity=".35"/></pattern>
+<pattern id="hatch" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(-35)"><line x1="0" y1="0" x2="0" y2="6" stroke="#05080d" stroke-width="1.4" opacity=".55"/></pattern>
+<clipPath id="moonclip"><circle cx="${MX}" cy="${MY}" r="${MR}"/></clipPath>
+<filter id="blur" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="6"/></filter>
 <path id="bat" d="${BAT}"/></defs>
-<rect width="${W}" height="${H}" fill="url(#sky)"/>`);
-  for (let i = 0; i < 80; i++) o.push(`<circle cx="${(r() * W) | 0}" cy="${(r() * 250) | 0}" r="${[.6, .8, 1.1][(r() * 3) | 0]}" fill="#cfd6e6" opacity="${(.12 + r() * .45).toFixed(2)}"/>`);
-  o.push(`<circle cx="800" cy="215" r="170" fill="url(#mg)"/><circle cx="800" cy="215" r="74" fill="url(#moon)"/>
-<g fill="#a29c88" opacity=".3"><circle cx="775" cy="195" r="12"/><circle cx="822" cy="240" r="8"/><circle cx="814" cy="183" r="5"/><circle cx="768" cy="240" r="6"/></g>`);
-  for (const [y, d, dl, s, op] of [[90, 90, -20, 1.2, .55], [160, 120, -70, 1.6, .45], [60, 150, -110, 1, .4], [210, 100, -45, 1.3, .5]])
-    o.push(`<g class="cloud" style="--d:${d}s;animation-delay:${dl}s" opacity="${op}"><g transform="translate(0 ${y}) scale(${s})" fill="#161d2e" filter="url(#blur)"><ellipse rx="120" ry="18"/><ellipse cx="50" cy="-10" rx="70" ry="16"/><ellipse cx="-60" cy="4" rx="80" ry="12"/></g></g>`);
-  o.push(`<g class="sway"><polygon points="430,470 450,470 640,96 470,74" fill="url(#beam)" filter="url(#soft)"/><g transform="translate(560 84) rotate(-6)"><ellipse rx="96" ry="38" fill="url(#spot)"/><use href="#bat" xlink:href="#bat" transform="scale(1.3 1.05)" fill="#07090f" opacity=".85"/></g></g>`);
-  let x = 0; const far = [];
-  while (x < W) { const w = 40 + (r() * 50 | 0), h = 120 + (r() * 95 | 0); far.push(`<rect x="${x}" y="${H - h}" width="${w}" height="${h}"/>`); x += w + (r() * 6 | 0); }
-  o.push(`<g fill="#0b1120">${far.join('')}<rect x="1061" y="130" width="4" height="40"/><rect x="1045" y="165" width="36" height="300"/></g>`);
-  const near = [[0, 120, 150], [118, 90, 110], [205, 140, 120], [350, 70, 165], [418, 120, 95], [535, 100, 140], [632, 110, 115], [740, 130, 130], [868, 95, 100], [960, 110, 170], [1068, 132, 140]];
-  o.push(`<g fill="#040509">${near.map(([x, w, h]) => `<rect x="${x}" y="${H - h}" width="${w}" height="${h}"/>`).join('')}</g><g>`);
-  for (const [x, w, h] of near) for (let wx = x + 10; wx < x + w - 10; wx += 14) for (let wy = H - h + 14; wy < H - 36; wy += 18) if (r() < .2) {
-    const anim = r() < .35 ? ` class="win" style="--d:${7 + (r() * 12 | 0)}s;--o:-${r() * 15 | 0}s"` : '';
-    o.push(`<rect x="${wx}" y="${wy}" width="5" height="8" fill="${['#e9c46a', '#f0d38a', '#d9b45a', '#8a9cbd'][r() * 4 | 0]}" opacity=".75"${anim}/>`);
+<rect width="${W}" height="${H}" fill="url(#sky)"/>
+<rect width="${W}" height="${H}" fill="url(#dots)" opacity=".5"/>`);
+  for (let i = 0; i < 60; i++) o.push(`<circle cx="${(r() * W) | 0}" cy="${(r() * H) | 0}" r="${[.6, .9, 1.2][(r() * 3) | 0]}" fill="#c9d4e2" opacity="${(.1 + r() * .35).toFixed(2)}"/>`);
+
+  // moon: pale disc, speckle texture, comic ink rings
+  o.push(`<circle cx="${MX}" cy="${MY}" r="${MR + 70}" fill="url(#mg)"/><circle cx="${MX}" cy="${MY}" r="${MR}" fill="url(#moon)"/>
+<g clip-path="url(#moonclip)"><rect x="${MX - MR}" y="${MY - MR}" width="${MR * 2}" height="${MR * 2}" fill="url(#dots)" opacity=".7"/>
+<g fill="none" stroke="#8fa1b8" stroke-width="1.6" opacity=".55"><circle cx="${MX + 60}" cy="${MY - 70}" r="46"/><path d="M${MX - 120},${MY + 30} q40,-40 90,-10"/><circle cx="${MX + 110}" cy="${MY + 60}" r="30"/><path d="M${MX - 40},${MY + 120} q30,-25 70,0"/><path d="M${MX + 20},${MY - 140} q25,10 40,40"/><circle cx="${MX - 70}" cy="${MY - 60}" r="18"/></g></g>`);
+  // clouds across the moon's base
+  for (const [y, d, dl, s, op] of [[330, 110, -20, 1.6, .75], [370, 140, -80, 2, .8], [300, 170, -120, 1.2, .5]])
+    o.push(`<g class="cloud" style="--d:${d}s;animation-delay:${dl}s" opacity="${op}"><g transform="translate(0 ${y}) scale(${s})" fill="#1b2a3e" filter="url(#blur)"><ellipse rx="140" ry="20"/><ellipse cx="60" cy="-12" rx="80" ry="18"/><ellipse cx="-70" cy="4" rx="90" ry="14"/></g></g>`);
+  // bare branches, top left
+  o.push(`<g fill="none" stroke="#0a111b" stroke-linecap="round" class="branch">
+<path d="M-10,40 C80,30 160,60 260,20" stroke-width="10"/><path d="M120,44 C150,10 170,0 200,-10" stroke-width="5"/><path d="M200,36 C230,60 270,70 320,64" stroke-width="5"/>
+<path d="M-10,120 C40,100 90,110 130,80" stroke-width="7"/><path d="M60,104 C70,140 60,170 40,200" stroke-width="3"/><path d="M260,20 C300,10 330,30 360,24" stroke-width="3"/>
+<path d="M90,40 l10,-22 M150,50 l18,10 M240,26 l6,-16 M300,66 l14,-14 M100,92 l-6,-18 M30,112 l-4,20" stroke-width="2.5"/></g>`);
+
+  // the bust: profile facing right, cowl + cape over the shoulder
+  const bust = `<g transform="translate(-60 -70) scale(1.15)"><g class="bust">
+<path d="M150,460 C150,380 190,300 260,262 C300,240 340,232 360,214 L366,170 L372,128 L386,80 L404,126 L420,122 L440,76 L450,130 L463,150 L471,172 L475,190 L488,207 L477,213 L479,223 L475,229 L481,244 L459,257 L452,272 C478,286 505,300 520,340 C534,380 540,420 545,460 Z" fill="#141b28"/>
+<path d="M366,170 L372,128 L386,80 L404,126 L420,122 L440,76 L450,130 L463,150 L471,172 L456,188 L446,232 L459,257 L452,272 C420,262 392,246 370,222 Z" fill="#2a1720"/>
+<path d="M386,80 L404,126 M440,76 L450,130 M372,128 C366,160 364,190 370,222" fill="none" stroke="#7a3d4c" stroke-width="2.2" opacity=".7"/>
+<path d="M456,188 L466,186 L475,190 L488,207 L477,213 L479,223 L475,229 L481,244 L459,257 L446,232 Z" fill="#6f7a8f"/>
+<path d="M459,177 L470,175" stroke="#e8eef5" stroke-width="2.4" stroke-linecap="round"/>
+<path d="M150,460 C150,380 190,300 260,262 C300,240 330,236 352,226 C330,262 300,300 290,360 C284,400 290,440 300,460 Z" fill="#321a24"/>
+<path d="M190,330 C230,290 270,268 330,246" fill="none" stroke="#7a3d4c" stroke-width="2" opacity=".5"/>
+<path d="M150,460 C150,380 190,300 260,262 C300,240 330,236 352,226 C330,262 300,300 290,360 C284,400 290,440 300,460 Z" fill="url(#hatch)" opacity=".7"/>
+<path d="M300,460 C290,420 296,370 320,330 C360,300 430,296 470,300 C500,320 520,360 530,400 L545,460 Z" fill="url(#hatch)" opacity=".45"/>
+<use href="#bat" xlink:href="#bat" transform="translate(440 352) scale(1.15 .95) rotate(-4)" fill="#05080d"/>
+<path d="M360,400 q30,10 60,0 M380,430 q30,8 60,-2 M470,380 q20,14 40,10" fill="none" stroke="#05080d" stroke-width="2" opacity=".5"/>
+</g></g>`;
+  o.push(bust);
+
+  // swarm of bats pouring off the shoulder across the moon
+  for (let i = 0; i < 34; i++) {
+    const dur = 7 + r() * 5, dl = -(r() * 12).toFixed(2), sc = (.07 + r() * .1).toFixed(3), jy = (r() * 80 - 40) | 0, jx = (r() * 40) | 0;
+    o.push(`<g><animateMotion dur="${dur.toFixed(1)}s" begin="${dl}s" repeatCount="indefinite" path="M${470 + jx},${300 + jy / 2} C${600 + jx},${220 + jy} ${780},${300 + jy} ${960 + jx},${170 + jy} S${1150},${120 + jy} ${1260},${60 + jy}"/><g transform="scale(${sc})"><use href="#bat" xlink:href="#bat" class="flap" style="animation-duration:${(.22 + r() * .15).toFixed(2)}s" fill="#0b1422"/></g></g>`);
   }
-  o.push(`</g><circle cx="1063" cy="128" r="2.4" fill="#ff4b3a" class="flick"/>`);
-  o.push(`<g transform="translate(805 330)" fill="${C.black}">${FIGURE('cape')}</g>`);
-  for (const [dur, dl, y0, sc] of [[16, 0, 140, .16], [21, -7, 100, .12], [26, -15, 180, .1]])
-    o.push(`<g><animateMotion dur="${dur}s" begin="${dl}s" repeatCount="indefinite" path="M-60,${y0} C300,${y0 - 60} 700,${y0 + 50} 1260,${y0 - 30}"/><g transform="scale(${sc})"><use href="#bat" xlink:href="#bat" class="flap" fill="${C.black}"/></g></g>`);
+
+  // the throw: batarang leaves the chest, spins, grows toward the viewer, cracks the glass
+  o.push(`<g transform="translate(515 318)"><g class="fly"><g class="spin"><use href="#bat" xlink:href="#bat" fill="#070b12" stroke="#a9b8cb" stroke-width="1.2"/></g></g></g>
+<g class="crack" transform="translate(760 190)" fill="none" stroke="#e6ecf3" stroke-width="2" stroke-linecap="round">
+<path d="M0,0 L-70,-40 L-120,-36 M0,0 L-30,-90 L-20,-150 M0,0 L60,-70 L120,-80 M0,0 L90,20 L160,10 M0,0 L50,90 L60,160 M0,0 L-40,70 L-110,100 M0,0 L-90,10"/>
+<path d="M-40,-22 L-18,-50 M30,-36 L50,6 M44,48 L-20,38" stroke-width="1.2" opacity=".7"/></g>
+<rect width="${W}" height="${H}" fill="#e6ecf3" class="hit"/>`);
+
   const drops = [];
-  for (let i = 0; i < 120; i++) { const x = r() * (W + 40), y = -60 + r() * (H + 60); drops.push(`<line x1="${x | 0}" y1="${y | 0}" x2="${(x - 4) | 0}" y2="${(y + 16) | 0}"/>`); }
-  o.push(`<g stroke="#8fa3c8" stroke-width=".7" opacity=".18"><g class="rain">${drops.join('')}</g></g>`);
+  for (let i = 0; i < 90; i++) { const x = r() * (W + 40), y = -60 + r() * (H + 60); drops.push(`<line x1="${x | 0}" y1="${y | 0}" x2="${(x - 4) | 0}" y2="${(y + 16) | 0}"/>`); }
+  o.push(`<g stroke="#a9b8cb" stroke-width=".7" opacity=".14"><g class="rain">${drops.join('')}</g></g>`);
 
   // name + live numbers
-  o.push(label(48, 52, `${USER}`));
-  o.push(`<g>${bitmap('YOUSSEF', 48, 70, 10, C.bright, true)}</g>`);
-  const stat = (y, k, v, unit) => `${label(1000, y, k)}${T(1000, y + 32, v, 30, C.bright, 'font-weight="700"')}${unit ? T(1004 + v.length * 18.5, y + 32, unit, 11, C.dim) : ''}`;
-  o.push(`<rect x="980" y="30" width="190" height="200" fill="${C.black}" opacity=".55"/>`);
-  o.push(stat(56, 'streak', String(streak), 'days') + stat(120, `${thisYear}`, fmt(yearTotal), 'commits') + stat(184, 'all time', fmt(total), ''));
+  o.push(label(560, 330, `${USER}`));
+  o.push(`<g>${bitmap('YOUSSEF', 560, 344, 8, C.bright, true)}</g>`);
+  const stat = (y, k, v, unit) => `${label(1010, y, k)}${T(1010, y + 30, v, 28, C.bright, 'font-weight="700"')}${unit ? T(1014 + v.length * 17.3, y + 30, unit, 11, C.dim) : ''}`;
+  o.push(`<rect x="992" y="300" width="190" height="122" fill="#060a10" opacity=".6"/>`);
+  o.push(stat(322, 'streak', String(streak), 'days') + stat(374, `${thisYear}`, fmt(yearTotal), 'commits'));
+  o.push(`<rect x="0" y="${H - 1}" width="${W}" height="1" fill="${C.line}"/>`);
 
-  // ticker of recent days
-  const items = last(30).reverse().map(d => `${shortDate(d.date)}  ${d.count}`).join('   ·   ');
-  const tw = items.length * 7.8 + 60;
-  o.push(`<rect x="0" y="${H - 34}" width="${W}" height="34" fill="${C.black}" opacity=".85"/><line x1="0" x2="${W}" y1="${H - 34}" y2="${H - 34}" stroke="${C.line}"/>
-<g class="tick" style="--w:${tw.toFixed(0)}px">${T(0, H - 13, items, 13, C.dim)}${T(tw, H - 13, items, 13, C.dim)}</g>`);
-  o.push(`<rect width="${W}" height="${H}" fill="#dfe7ff" class="flash"/>`);
-  const style = `.sway{transform-origin:440px 470px;animation:sway 14s ease-in-out infinite}@keyframes sway{0%,100%{transform:rotate(-5deg)}50%{transform:rotate(4deg)}}
-.flick{animation:flick 6s steps(1) infinite}@keyframes flick{0%,47%,50%,100%{opacity:1}48%{opacity:.2}83%{opacity:.35}84%{opacity:1}}
-.win{animation:win var(--d) ease-in-out infinite;animation-delay:var(--o)}@keyframes win{0%,40%,100%{opacity:.75}50%,90%{opacity:.04}}
-.cloud{animation:drift var(--d) linear infinite}@keyframes drift{from{transform:translateX(-400px)}to{transform:translateX(1500px)}}
+  const style = `.cloud{animation:drift var(--d) linear infinite}@keyframes drift{from{transform:translateX(-400px)}to{transform:translateX(1500px)}}
 .rain{animation:rain .7s linear infinite}@keyframes rain{from{transform:translate(0,-60px)}to{transform:translate(-15px,0)}}
-.flash{opacity:0;animation:flash 11s infinite}@keyframes flash{0%,61%,66%,100%{opacity:0}62%{opacity:.26}63%{opacity:.04}64%{opacity:.15}}
-.cape{transform-box:fill-box;transform-origin:50% 0;animation:cape 3.6s ease-in-out infinite}@keyframes cape{0%,100%{transform:skewX(0) scaleX(1)}35%{transform:skewX(-6deg) scaleX(1.06)}70%{transform:skewX(-2deg) scaleX(1.02)}}
-.flap{transform-box:fill-box;transform-origin:center;animation:flap .3s ease-in-out infinite alternate}@keyframes flap{to{transform:scaleY(.3)}}
+.flap{transform-box:fill-box;transform-origin:center;animation:flap .3s ease-in-out infinite alternate}@keyframes flap{to{transform:scaleY(.25)}}
 .px{animation:px .5s steps(2) both}@keyframes px{from{opacity:0}to{opacity:1}}
-.tick{animation:tick 80s linear infinite}@keyframes tick{to{transform:translateX(calc(var(--w) * -1))}}`;
-  return svg(H, `${USER}: night city, bat signal, caped figure on a rooftop. ${streak}-day streak, ${yearTotal} contributions in ${thisYear}, ${total} all time.`, o.join('\n'), style);
+.branch{transform-origin:0 40px;animation:creak 7s ease-in-out infinite}@keyframes creak{50%{transform:rotate(.8deg)}}
+.bust{transform-origin:350px 460px;animation:bust 9s cubic-bezier(.3,0,.2,1) infinite}
+@keyframes bust{0%,48%,70%,100%{transform:none}52%{transform:translateX(-10px) rotate(-1.5deg)}56%{transform:translateX(14px) rotate(1deg)}62%{transform:translateX(4px)}}
+.fly{opacity:0;animation:fly 9s infinite}
+@keyframes fly{0%,54%{opacity:0;transform:translate(0,0) scale(.35)}55%{opacity:1;transform:translate(0,0) scale(.35);animation-timing-function:cubic-bezier(.5,0,1,.6)}68%{opacity:1;transform:translate(245px,-128px) scale(4.2)}69%,100%{opacity:0;transform:translate(245px,-128px) scale(4.6)}}
+.spin{animation:spin .45s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}
+.crack{opacity:0;animation:crack 9s infinite}@keyframes crack{0%,67.9%{opacity:0;transform:translate(760px,190px) scale(.4)}68%{opacity:1;transform:translate(760px,190px) scale(1)}86%{opacity:.8}94%,100%{opacity:0;transform:translate(760px,190px) scale(1)}}
+.hit{opacity:0;animation:hit 9s infinite}@keyframes hit{0%,67.9%,72%,100%{opacity:0}68%{opacity:.55}}`;
+  return svg(H, `${USER}: comic-style Batman in profile against a pale moon, a swarm of bats, and a batarang thrown at the screen. ${streak}-day streak, ${yearTotal} contributions in ${thisYear}.`, o.join('\n'), style);
 }
 
 // ---------- 2. signal: last 120 days ----------
@@ -174,7 +200,7 @@ function signal() {
   o.push(`<line x1="${x0}" x2="${x1}" y1="${base + .5}" y2="${base + .5}" stroke="${C.line}"/>`);
   d.forEach((day, i) => {
     const h = day.count ? Math.max(2, Math.sqrt(day.count / max) * hmax) : 1;
-    const fill = i === d.length - 1 ? C.gold : day.count > p75 ? '#9aa0ab' : '#3a3f4a';
+    const fill = i === d.length - 1 ? C.gold : day.count > p75 ? C.ramp[3] : C.ramp[2];
     o.push(`<rect class="bar" style="animation-delay:${(i * .012).toFixed(3)}s" x="${(x0 + i * bw + 1).toFixed(1)}" y="${(base - h).toFixed(1)}" width="${(bw - 2).toFixed(1)}" height="${h.toFixed(1)}" fill="${fill}"><title>${day.date}: ${day.count}</title></rect>`);
   });
   o.push(`<rect class="sweep" x="${x0}" y="${base - hmax - 6}" width="2" height="${hmax + 6}" fill="${C.gold}" opacity=".35"/>`);
@@ -194,7 +220,7 @@ function archive() {
   const nz = days.filter(d => d.count).map(d => d.count).sort((a, b) => a - b);
   const q = p => nz[Math.floor((nz.length - 1) * p)] || 1;
   const levels = [q(.25), q(.5), q(.8)];
-  const shade = c => !c ? '#0e1015' : c <= levels[0] ? '#262931' : c <= levels[1] ? '#454953' : c <= levels[2] ? '#7d828c' : '#c9ccd3';
+  const shade = c => !c ? C.ramp[0] : c <= levels[0] ? C.ramp[1] : c <= levels[1] ? C.ramp[2] : c <= levels[2] ? C.ramp[3] : C.ramp[4];
   const cell = 12, gap = 2, gx = 250, rowH = 7 * (cell + gap) + 34, top = 80;
   const H = top + years.length * rowH + 20;
   const o = [label(48, 40, 'archive'), T(48, 62, `every day since ${years.at(-1)?.[0] ?? thisYear}`, 13)];
@@ -234,7 +260,7 @@ function skyline() {
   const pts = arr => arr.map(p => p.map(n => n.toFixed(1)).join(',')).join(' ');
   const peak = cells.reduce((x, y) => (y.count > x.count ? y : x), cells[0]);
   const r = rng(11), o = [];
-  o.push(`<defs><radialGradient id="glow"><stop offset="0" stop-color="#f6eab0" stop-opacity=".18"/><stop offset="1" stop-color="#f6eab0" stop-opacity="0"/></radialGradient></defs>`);
+  o.push(`<defs><radialGradient id="glow"><stop offset="0" stop-color="#c9d3df" stop-opacity=".16"/><stop offset="1" stop-color="#c9d3df" stop-opacity="0"/></radialGradient></defs>`);
   o.push(label(48, 40, 'skyline') + T(48, 62, `last 12 months · ${fmt(sum(lastYear))} contributions`, 13));
   const byMonth = {}; lastYear.forEach(d => byMonth[d.date.slice(0, 7)] = (byMonth[d.date.slice(0, 7)] || 0) + d.count);
   const [bm, bmc] = Object.entries(byMonth).sort((x, y) => y[1] - x[1])[0];
@@ -253,9 +279,9 @@ function skyline() {
     let win = '';
     if (h > 22) for (let k = 0; k < h / 9; k++) if (r() < .28) {
       const t = .2 + r() * .55, [wx, wy] = P(w0 + (w1 - w0) * t, d1, 6 + k * 9);
-      win += `<rect x="${wx.toFixed(1)}" y="${wy.toFixed(1)}" width="2" height="3" fill="#e9c46a" opacity="${(.35 + r() * .5).toFixed(2)}"${r() < .3 ? ` class="win" style="animation-delay:-${(r() * 9).toFixed(1)}s"` : ''}/>`;
+      win += `<rect x="${wx.toFixed(1)}" y="${wy.toFixed(1)}" width="2" height="3" fill="#d9e2ee" opacity="${(.35 + r() * .5).toFixed(2)}"${r() < .3 ? ` class="win" style="animation-delay:-${(r() * 9).toFixed(1)}s"` : ''}/>`;
     }
-    o.push(`<g class="b" style="animation-delay:${(c.w * .025).toFixed(3)}s"><title>${c.date}: ${c.count}</title><polygon points="${left}" fill="${c.count ? '#0d0f15' : '#0b0c10'}"/><polygon points="${right}" fill="${c.count ? '#171a22' : '#0b0c10'}"/><polygon points="${top}" fill="${isPeak ? C.gold : c.count ? '#2b2f39' : '#101217'}"/>${win}</g>`);
+    o.push(`<g class="b" style="animation-delay:${(c.w * .025).toFixed(3)}s"><title>${c.date}: ${c.count}</title><polygon points="${left}" fill="${c.count ? '#0d1520' : '#0b111a'}"/><polygon points="${right}" fill="${c.count ? '#1a273b' : '#0b111a'}"/><polygon points="${top}" fill="${isPeak ? C.gold : c.count ? '#33486a' : '#101826'}"/>${win}</g>`);
   });
   o.push(`<g transform="translate(${px.toFixed(1)} ${(py + 2).toFixed(1)}) scale(.3)" fill="${C.black}" class="fig">${FIGURE('cape')}</g>`);
   return svg(H, `Skyline: the last 12 months of contributions as a night city. Peak ${peak.date} with ${peak.count}.`, o.join('\n'),
@@ -273,7 +299,7 @@ function tools() {
   list.forEach((t, i) => {
     const w = t.length * 8.4 + 30;
     if (x + w > W - 48) { x = 48; y += 46; }
-    o.push(`<g class="chip" style="animation-delay:${(i * .09).toFixed(2)}s"><rect x="${x}" y="${y}" width="${w.toFixed(0)}" height="32" fill="none" stroke="#2a2e37"/>${T(x + 15, y + 21, t, 14, C.text)}</g>`);
+    o.push(`<g class="chip" style="animation-delay:${(i * .09).toFixed(2)}s"><rect x="${x}" y="${y}" width="${w.toFixed(0)}" height="32" fill="none" stroke="#253246"/>${T(x + 15, y + 21, t, 14, C.text)}</g>`);
     x += w + 10;
   });
   return svg(H, `Tools: ${list.join(', ')}.`, o.join('\n'),
@@ -283,7 +309,7 @@ function tools() {
 // ---------- 6. end ----------
 function end() {
   const H = 130, o = [];
-  o.push(`<g transform="translate(${W - 110} 66)"><ellipse rx="52" ry="22" fill="#f6eab0" class="sig"/><path d="${BAT}" transform="scale(.7 .58)" fill="${C.panel}"/></g>`);
+  o.push(`<g transform="translate(${W - 110} 66)"><ellipse rx="52" ry="22" fill="#c9d3df" class="sig"/><path d="${BAT}" transform="scale(.7 .58)" fill="${C.panel}"/></g>`);
   o.push(label(48, 52, 'signal off') + T(48, 82, `rebuilt ${today} from live data`, 12, C.dim));
   return svg(H, `Signal off. Rebuilt ${today}.`, o.join('\n'),
     `.sig{animation:sig 6s ease-in-out infinite}@keyframes sig{0%,100%{opacity:.5}45%{opacity:.5}50%{opacity:.08}55%{opacity:.4}70%{opacity:.05}}`);
