@@ -1,5 +1,1 @@
-<div align="center">
-
-<img src="./assets/gotham.svg" width="100%" alt="" />
-
-</div>
+<p align="center"><img src="assets/title.svg" width="100%" alt="youssef-110: night city, bat signal, caped figure on a rooftop, live contribution numbers." /><img src="assets/signal.svg" width="100%" alt="Signal: daily contributions for the last 120 days." /><img src="assets/archive.svg" width="100%" alt="Archive: every day of contributions since 2021." /><img src="assets/skyline.svg" width="100%" alt="Skyline: the last 12 months of contributions as a night city." /><img src="assets/tools.svg" width="100%" alt="Tools." /><img src="assets/end.svg" width="100%" alt="Signal off." /></p>
