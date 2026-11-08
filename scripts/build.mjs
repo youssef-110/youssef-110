@@ -80,7 +80,7 @@ const comicSvg = (w, h, label, body, style) => `<svg xmlns="http://www.w3.org/20
 
 // splash page: modern comic, slate night with Ben-Day dots, newsprint narration boxes, extruded logo
 function heroSplash() {
-  const w = 720, h = 682, INK = '#0d1118', PAPER = '#efe7d2', MAROON = '#8e2b3b';
+  const w = 720, h = 512, INK = '#0d1118', PAPER = '#efe7d2', MAROON = '#8e2b3b';
   const box = (x, y, bw, bh, rot, fill, delay, inner) => `<g class="pop" style="animation-delay:${delay}s" transform="rotate(${rot} ${x + bw / 2} ${y + bh / 2})"><rect x="${x + 5}" y="${y + 5}" width="${bw}" height="${bh}" fill="${INK}"/><rect x="${x}" y="${y}" width="${bw}" height="${bh}" fill="${fill}" stroke="${INK}" stroke-width="3"/>${inner}</g>`;
   const L = (x, y, s, size = 26, fill = INK) => `<text x="${x}" y="${y}" font-family="Lettering" font-size="${size}" fill="${fill}" letter-spacing=".5">${xmlText(s)}</text>`;
   // speed lines converging on the art to the left
@@ -91,11 +91,11 @@ function heroSplash() {
 <rect width="${w}" height="${h}" fill="#1a2740"/><rect width="${w}" height="${h}" fill="url(#ben)"/>
 <g opacity=".9">${lines.join('')}</g>
 ${box(34, 34, 352, 54, -1.2, PAPER, .2, L(52, 70, 'MEANWHILE, ON GITHUB...'.replace('...', '…')))}
-<g class="slam" style="animation-delay:.55s"><g font-family="Splash" font-size="150" letter-spacing="2">
-<text x="44" y="262" fill="${INK}">${name}</text><text x="40" y="258" fill="${INK}">${name}</text><text x="38" y="256" fill="${MAROON}" stroke="${INK}" stroke-width="6" paint-order="stroke">${name}</text><text x="30" y="248" fill="${PAPER}" stroke="${INK}" stroke-width="5" paint-order="stroke">${name}</text></g></g>
-${box(56, 312, 410, 92, .8, PAPER, 1.1, L(76, 350, `NIGHT ${streak}.`) + L(76, 384, 'NO NIGHTS OFF.'))}
-${box(300, 432, 390, 92, -1, MAROON, 1.5, odometer(fmt(yearTotal), 322, 473, 40, 'Splash', PAPER, 1.6) + L(322, 506, `COMMITS IN ${thisYear}.`, 24, PAPER))}
-${box(84, 552, 380, 92, .6, PAPER, 1.9, L(104, 590, `${fmt(total)} SINCE ${START_YEAR}.`) + L(104, 624, 'THE LOG KEEPS GROWING.'))}
+<g class="slam" style="animation-delay:.55s"><g font-family="Splash" font-size="100" letter-spacing="2">
+<text x="44" y="186" fill="${INK}">${name}</text><text x="40" y="182" fill="${INK}">${name}</text><text x="38" y="180" fill="${MAROON}" stroke="${INK}" stroke-width="6" paint-order="stroke">${name}</text><text x="30" y="172" fill="${PAPER}" stroke="${INK}" stroke-width="5" paint-order="stroke">${name}</text></g></g>
+${box(56, 204, 410, 92, .8, PAPER, 1.1, L(76, 242, `NIGHT ${streak}.`) + L(76, 276, 'NO NIGHTS OFF.'))}
+${box(300, 312, 390, 92, -1, MAROON, 1.5, odometer(fmt(yearTotal), 322, 353, 40, 'Splash', PAPER, 1.6) + L(322, 386, `COMMITS IN ${thisYear}.`, 24, PAPER))}
+${box(84, 424, 330, 58, .6, PAPER, 1.9, L(104, 462, `${fmt(total)} SINCE ${START_YEAR}.`))}
 <rect x="3" y="3" width="${w - 6}" height="${h - 6}" fill="none" stroke="${INK}" stroke-width="6"/>`;
   return comicSvg(w, h, `Comic narration: Youssef. Night ${streak}, no nights off. ${yearTotal} commits in ${thisYear}. ${total} since ${START_YEAR}.`, body,
     `${fontFace('Splash', 'Bangers-Regular.woff2')}${fontFace('Lettering', 'ComicNeue-Bold.woff2')}${rollCss}
