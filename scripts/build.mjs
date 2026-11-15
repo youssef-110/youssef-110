@@ -1,67 +1,39 @@
-// Builds the profile panels in assets/ from real public commits.
-// No dependencies. Run: node scripts/build.mjs (GITHUB_TOKEN is optional; it raises the rate limit)
+// Builds the profile panels in assets/ from public GitHub contribution data.
+// No dependencies. Run: node scripts/build.mjs
 import { writeFileSync, mkdirSync, readFileSync } from 'node:fs';
 
 const USER = 'youssef-110';
 const START_YEAR = 2021; // account created 2021-06
-// Repos whose commits are generated on a schedule, not written. They are left out of every number.
-const FILLER = ['contrib-graph', 'streak'];
 const OUT = new URL('../assets/', import.meta.url);
 const W = 1200;
 
 
-// ---------- data: commits authored on the default branch of public repos, merges left out ----------
-const QUERY = `author:${USER} merge:false ${FILLER.map(r => `-repo:${USER}/${r}`).join(' ')}`;
-const sleep = ms => new Promise(r => setTimeout(r, ms));
-
-async function searchPage(q, page) {
-  const url = `https://api.github.com/search/commits?q=${encodeURIComponent(q)}&sort=author-date&order=desc&per_page=100&page=${page}`;
-  const headers = { 'User-Agent': 'profile-builder', Accept: 'application/vnd.github+json' };
-  if (process.env.GITHUB_TOKEN) headers.Authorization = `Bearer ${process.env.GITHUB_TOKEN}`;
-  for (let attempt = 0; ; attempt++) {
-    const res = await fetch(url, { headers });
-    if (res.ok) return res.json();
-    const limited = res.status === 403 || res.status === 429;
-    if (!limited || attempt === 3) throw new Error(`commit search: HTTP ${res.status}`);
-    // rate limited: wait for the window to reset (search allows 10 requests a minute without a token)
-    const reset = +res.headers.get('x-ratelimit-reset') * 1000 - Date.now();
-    await sleep(Number.isFinite(reset) && reset > 0 ? Math.min(reset, 60000) + 1000 : 5000);
+// ---------- data ----------
+async function fetchYear(y) {
+  const res = await fetch(`https://github.com/users/${USER}/contributions?from=${y}-01-01&to=${y}-12-31`, {
+    headers: { 'User-Agent': 'profile-builder' },
+  });
+  if (!res.ok) throw new Error(`contributions ${y}: HTTP ${res.status}`);
+  const html = await res.text();
+  const idToDate = new Map();
+  for (const m of html.matchAll(/data-date="(\d{4}-\d\d-\d\d)"[^>]*?id="(contribution-day-component-[\d-]+)"/g)) idToDate.set(m[2], m[1]);
+  const days = [];
+  for (const m of html.matchAll(/for="(contribution-day-component-[\d-]+)"[^>]*>([^<]*)/g)) {
+    const date = idToDate.get(m[1]);
+    if (!date) continue;
+    const n = /^(\d+)/.exec(m[2].trim().replace(/,/g, ''));
+    days.push({ date, count: n ? +n[1] : 0 });
   }
-}
-async function searchAll(q) {
-  const items = [];
-  for (let page = 1; ; page++) {
-    const r = await searchPage(q, page);
-    items.push(...r.items);
-    if (!r.items.length || items.length >= Math.min(r.total_count, 1000)) return { total: r.total_count, items };
-  }
+  if (!days.length) throw new Error(`contributions ${y}: no days parsed (GitHub markup changed?)`);
+  return days;
 }
 
 const today = new Date().toISOString().slice(0, 10);
 const thisYear = +today.slice(0, 4);
-let { total: found, items: raw } = await searchAll(QUERY);
-if (found > 1000) { // one query returns at most 1000 commits, so go year by year
-  raw = [];
-  for (let y = START_YEAR; y <= thisYear; y++) {
-    const r = await searchAll(`${QUERY} author-date:${y}-01-01..${y}-12-31`);
-    // shortcut: a year with more than 1000 commits would be cut short, split it by month when that happens
-    if (r.total > 1000) throw new Error(`${y} has ${r.total} commits, more than one query returns`);
-    raw.push(...r.items);
-  }
-}
-if (!raw.length) throw new Error('commit search returned no commits');
-// newest first; dates are UTC days, the same clock as `today`
-const commits = raw.map(c => {
-  const at = new Date(c.commit.author.date);
-  return { at: +at, date: at.toISOString().slice(0, 10), repo: c.repository.name, msg: c.commit.message.split('\n')[0].trim() };
-}).filter(c => c.date <= today && c.date >= `${START_YEAR}-01-01`).sort((a, b) => b.at - a.at);
-const perDay = new Map();
-for (const c of commits) perDay.set(c.date, (perDay.get(c.date) ?? 0) + 1);
-const days = [];
-for (let d = new Date(Date.UTC(START_YEAR, 0, 1)); d.toISOString().slice(0, 10) <= today; d.setUTCDate(d.getUTCDate() + 1)) {
-  const date = d.toISOString().slice(0, 10);
-  days.push({ date, count: perDay.get(date) ?? 0 });
-}
+const all = [];
+for (let y = START_YEAR; y <= thisYear; y++) all.push(...await fetchYear(y));
+const days = all.filter(d => d.date <= today).sort((a, b) => a.date.localeCompare(b.date));
+const byDate = new Map(days.map(d => [d.date, d.count]));
 
 const sum = a => a.reduce((s, d) => s + d.count, 0);
 const total = sum(days);
@@ -108,7 +80,7 @@ const comicSvg = (w, h, label, body, style) => `<svg xmlns="http://www.w3.org/20
 
 // splash page: modern comic, slate night with Ben-Day dots, newsprint narration boxes, extruded logo
 function heroSplash() {
-  const w = 720, h = 528, INK = '#0d1118', PAPER = '#efe7d2', MAROON = '#8e2b3b';
+  const w = 720, h = 512, INK = '#0d1118', PAPER = '#efe7d2', MAROON = '#8e2b3b';
   const box = (x, y, bw, bh, rot, fill, delay, inner) => `<g class="pop" style="animation-delay:${delay}s" transform="rotate(${rot} ${x + bw / 2} ${y + bh / 2})"><rect x="${x + 5}" y="${y + 5}" width="${bw}" height="${bh}" fill="${INK}"/><rect x="${x}" y="${y}" width="${bw}" height="${bh}" fill="${fill}" stroke="${INK}" stroke-width="3"/>${inner}</g>`;
   const L = (x, y, s, size = 26, fill = INK) => `<text x="${x}" y="${y}" font-family="Lettering" font-size="${size}" fill="${fill}" letter-spacing=".5">${xmlText(s)}</text>`;
   // speed lines converging on the art to the left
@@ -121,13 +93,11 @@ function heroSplash() {
 ${box(34, 34, 352, 54, -1.2, PAPER, .2, L(52, 70, 'MEANWHILE, ON GITHUB...'.replace('...', '…')))}
 <g class="slam" style="animation-delay:.55s"><g font-family="Splash" font-size="100" letter-spacing="2">
 <text x="44" y="186" fill="${INK}">${name}</text><text x="40" y="182" fill="${INK}">${name}</text><text x="38" y="180" fill="${MAROON}" stroke="${INK}" stroke-width="6" paint-order="stroke">${name}</text><text x="30" y="172" fill="${PAPER}" stroke="${INK}" stroke-width="5" paint-order="stroke">${name}</text></g></g>
-${box(56, 204, 410, 92, .8, PAPER, 1.1, streak >= 3
-    ? L(76, 242, `NIGHT ${streak}.`) + L(76, 276, 'NO NIGHTS OFF.')
-    : L(76, 242, `${fmt(activeDays)} NIGHTS`) + L(76, 276, 'ON PATROL.'))}
+${box(56, 204, 410, 92, .8, PAPER, 1.1, L(76, 242, `NIGHT ${streak}.`) + L(76, 276, 'NO NIGHTS OFF.'))}
 ${box(300, 312, 390, 92, -1, MAROON, 1.5, odometer(fmt(yearTotal), 322, 353, 40, 'Splash', PAPER, 1.6) + L(322, 386, `COMMITS IN ${thisYear}.`, 24, PAPER))}
 ${box(84, 424, 330, 58, .6, PAPER, 1.9, L(104, 462, `${fmt(total)} SINCE ${START_YEAR}.`))}
 <rect x="3" y="3" width="${w - 6}" height="${h - 6}" fill="none" stroke="${INK}" stroke-width="6"/>`;
-  return comicSvg(w, h, `Comic narration: Youssef. ${yearTotal} commits in ${thisYear}. ${total} since ${START_YEAR}.`, body,
+  return comicSvg(w, h, `Comic narration: Youssef. Night ${streak}, no nights off. ${yearTotal} commits in ${thisYear}. ${total} since ${START_YEAR}.`, body,
     `${fontFace('Splash', 'Bangers-Regular.woff2')}${fontFace('Lettering', 'ComicNeue-Bold.woff2')}${rollCss}
 .pop{animation:pop .35s cubic-bezier(.2,.8,.3,1) both}@keyframes pop{from{opacity:0;transform:translateY(10px)}}
 .slam{transform-box:fill-box;transform-origin:center;animation:slam .4s cubic-bezier(.2,.9,.3,1) both}@keyframes slam{from{opacity:0;transform:scale(1.25)}60%{opacity:1}}`);
@@ -168,66 +138,42 @@ function signal() {
   o.push(caption(48, 272, [`LONGEST RUN: ${longest} NIGHTS.`], { size: 17, delay: .9 }));
   o.push(caption(400, 272, [`${fmt(activeDays)} NIGHTS ON PATROL.`], { size: 17, delay: 1.05, rot: .6 }));
   o.push(caption(790, 272, [`WORST NIGHT: ${peak.date}, ${peak.count}.`], { size: 17, delay: 1.2, fill: K.maroon, color: K.paper, rot: -.6 }));
-  return page(H, `Commits over the last 120 nights. Longest run ${longest} nights, ${activeDays} active days, busiest ${peak.date} with ${peak.count}.`, o.join('\n'),
+  return page(H, `The last 120 nights of contributions. Longest run ${longest} nights, ${activeDays} active days, busiest ${peak.date} with ${peak.count}.`, o.join('\n'),
     `${popCss}.bar{transform-box:fill-box;transform-origin:50% 100%;animation:grow .6s cubic-bezier(.2,.8,.2,1) both}@keyframes grow{from{transform:scaleY(0)}}`);
 }
 
-// ---------- 3. latest commits, one row each ----------
-function log() {
-  // one row per distinct message, so a change repeated across repos does not fill the panel
-  const seen = new Set(), rows = [];
-  for (const c of commits) {
-    if (seen.has(c.msg)) continue;
-    seen.add(c.msg);
-    rows.push(c);
-    if (rows.length === 6) break;
-  }
-  const cut = (s, n) => (s.length > n ? s.slice(0, n - 1).trimEnd() + '…' : s);
-  const x = 48, rw = W - 96, rowH = 52, top = 98, H = top + rows.length * rowH + 22;
-  const o = [caption(34, 28, ['LATEST COMMITS.'], { rot: -1 })];
-  rows.forEach((c, i) => {
-    const y = top + i * rowH;
-    o.push(`<g class="pop" style="animation-delay:${(.3 + i * .1).toFixed(1)}s"><rect x="${x + 4}" y="${y + 4}" width="${rw}" height="40" fill="${K.ink}"/><rect x="${x}" y="${y}" width="${rw}" height="40" fill="${K.paper}" stroke="${K.ink}" stroke-width="3"/><rect x="${x}" y="${y}" width="118" height="40" fill="${K.maroon}" stroke="${K.ink}" stroke-width="3"/><text x="${x + 59}" y="${y + 29}" text-anchor="middle" font-family="Splash" font-size="24" letter-spacing="1" fill="${K.paper}">${up(shortDate(c.date))}</text>${say(x + 136, y + 27, up(cut(c.repo, 24)), 18, K.maroon)}${say(x + 410, y + 27, up(cut(c.msg, 62)), 18)}</g>`);
-  });
-  return page(H, `Latest commits: ${rows.map(c => `${c.date} ${c.repo}: ${c.msg}`).join('; ')}.`, o.join('\n'), popCss);
-}
-
-// ---------- 4. the city he built: last 12 months as an ink skyline ----------
-function skyline() {
-  const H = 560, s = 16, a = s * .9, b = s * .34;
-  const lastYear = last(364 + new Date(today).getUTCDay() + 1);
-  const firstDay = new Date(lastYear[0].date).getUTCDay();
-  const cells = lastYear.map((d, i) => ({ ...d, w: Math.floor((i + firstDay) / 7), d: (i + firstDay) % 7 }));
-  const max = Math.max(1, ...cells.map(c => c.count));
-  const weeks = cells.at(-1).w + 1;
-  const ox = W / 2 - ((weeks - 7) / 2) * a + 40, oy = 230;
-  const P = (w, d, h = 0) => [ox + (w - d) * a, oy + (w + d) * b - h];
-  const pts = arr => arr.map(p => p.map(n => n.toFixed(1)).join(',')).join(' ');
-  const peak = cells.reduce((x, y) => (y.count > x.count ? y : x), cells[0]);
-  const r = rng(11), o = [];
-  o.push(caption(34, 28, ['THE CITY HE BUILT.', `12 MONTHS, ${fmt(sum(lastYear))} COMMITS.`], { rot: -.8 }));
-  const g = .1;
-  cells.sort((x, y) => (x.w + x.d) - (y.w + y.d) || x.w - y.w).forEach(c => {
-    const h = c.count ? 4 + Math.sqrt(c.count / max) * 180 : 1.5;
-    const w0 = c.w + g, w1 = c.w + 1 - g, d0 = c.d + g, d1 = c.d + 1 - g;
-    const top = pts([P(w0, d0, h), P(w1, d0, h), P(w1, d1, h), P(w0, d1, h)]);
-    const right = pts([P(w1, d0, 0), P(w1, d1, 0), P(w1, d1, h), P(w1, d0, h)]);
-    const left = pts([P(w0, d1, 0), P(w1, d1, 0), P(w1, d1, h), P(w0, d1, h)]);
-    let win = '';
-    if (h > 24) for (let k = 0; k < h / 10; k++) if (r() < .3) {
-      const t = .2 + r() * .55, [wx, wy] = P(w0 + (w1 - w0) * t, d1, 7 + k * 10);
-      win += `<rect x="${wx.toFixed(1)}" y="${wy.toFixed(1)}" width="2.4" height="3.4" fill="${K.paper}" opacity=".85"/>`;
+// ---------- 3. every night since the first ----------
+function archive() {
+  const years = [];
+  for (let y = thisYear; y >= START_YEAR; y--) { const t = sum(days.filter(d => d.date.startsWith(String(y)))); if (t) years.push([y, t]); }
+  const nz = days.filter(d => d.count).map(d => d.count).sort((a, b) => a - b);
+  const q = p => nz[Math.floor((nz.length - 1) * p)] || 1;
+  const levels = [q(.25), q(.5), q(.8)];
+  const shade = c => !c ? K.cells[0] : c <= levels[0] ? K.cells[1] : c <= levels[1] ? K.cells[2] : c <= levels[2] ? K.cells[3] : K.cells[4];
+  const cell = 12, gap = 3, gx = 250, rowH = 7 * (cell + gap) + 30, top = 112;
+  const H = top + years.length * rowH + 16;
+  const o = [caption(34, 28, [`EVERY NIGHT SINCE ${years.at(-1)?.[0] ?? thisYear}.`], { rot: -.8 })];
+  MONTHS.forEach((m, i) => o.push(say(gx + i * 4.42 * (cell + gap), top - 12, up(m), 14, K.paper, 'opacity=".75"')));
+  years.forEach(([y, t], yi) => {
+    const oy = top + yi * rowH;
+    o.push(`<text x="48" y="${oy + 46}" font-family="Splash" font-size="52" fill="${K.paper}" stroke="${K.ink}" stroke-width="5" paint-order="stroke" letter-spacing="1">${y}</text>`);
+    o.push(say(50, oy + 74, `${fmt(t)} COMMITS`, 15, K.paper, 'opacity=".8"'));
+    const jan1 = new Date(Date.UTC(y, 0, 1)), offset = jan1.getUTCDay();
+    let peak = null;
+    for (let dt = new Date(jan1); dt.getUTCFullYear() === y; dt.setUTCDate(dt.getUTCDate() + 1)) {
+      const k = dt.toISOString().slice(0, 10), c = byDate.get(k) ?? 0;
+      if (!peak || c > peak[1]) peak = [k, c];
     }
-    const zero = !c.count;
-    o.push(`<g class="b" style="animation-delay:${(c.w * .02).toFixed(2)}s"><title>${c.date}: ${c.count}</title><polygon points="${left}" fill="${zero ? K.cells[0] : K.ink}" stroke="${K.ink}" stroke-width=".6"/><polygon points="${right}" fill="${zero ? K.cells[0] : '#16213a'}" stroke="${K.ink}" stroke-width=".6"/><polygon points="${top}" fill="${c === peak ? K.red : zero ? K.cells[0] : K.cells[1]}" stroke="${K.ink}" stroke-width=".8"/>${win}</g>`);
+    let g = `<g class="row" style="animation-delay:${(yi * .2).toFixed(1)}s">`;
+    for (let dt = new Date(jan1); dt.getUTCFullYear() === y && dt.toISOString().slice(0, 10) <= today; dt.setUTCDate(dt.getUTCDate() + 1)) {
+      const k = dt.toISOString().slice(0, 10), idx = Math.round((dt - jan1) / 864e5) + offset;
+      const c = byDate.get(k) ?? 0, col = Math.floor(idx / 7), row = idx % 7;
+      g += `<rect x="${gx + col * (cell + gap)}" y="${oy + row * (cell + gap)}" width="${cell}" height="${cell}" fill="${k === peak[0] && c ? K.red : shade(c)}"${c ? ` stroke="${K.ink}" stroke-width=".8"` : ''}/>`;
+    }
+    o.push(g + '</g>');
   });
-  // a caption pointing at the tallest building, the way a comic tags a location
-  const [px, py] = P(peak.w + .5, peak.d + .5, 4 + 180);
-  const cx = Math.min(W - 330, px + 40), cy = 70;
-  o.push(`<path d="M${(cx + 40).toFixed(0)},${cy + 64} L${px.toFixed(0)},${(py - 6).toFixed(0)} L${(cx + 70).toFixed(0)},${cy + 64} Z" fill="${K.paper}" stroke="${K.ink}" stroke-width="3" class="pop" style="animation-delay:1.4s"/>`);
-  o.push(caption(cx, cy, [`TALLEST: ${peak.date}.`, `${peak.count} COMMITS IN ONE NIGHT.`], { size: 17, delay: 1.4, rot: .6 }));
-  return page(H, `The last 12 months of commits drawn as a city skyline. Tallest building ${peak.date} with ${peak.count}.`, o.join('\n'),
-    `${popCss}.b{animation:rise .8s cubic-bezier(.2,.8,.2,1) both}@keyframes rise{from{opacity:0;transform:translateY(14px)}}`);
+  return page(H, `Every day of contributions since ${years.at(-1)?.[0]}, one row per year.`, o.join('\n'),
+    `${popCss}.row{animation:fade .8s ease-out both}@keyframes fade{from{opacity:0}}`);
 }
 
 // ---------- 5. utility belt ----------
@@ -253,6 +199,6 @@ function end() {
 }
 
 mkdirSync(OUT, { recursive: true });
-const panels = { 'hero.svg': heroSplash(), 'log.svg': log(), 'signal.svg': signal(), 'skyline.svg': skyline(), 'tools.svg': tools(), 'end.svg': end() };
+const panels = { 'hero.svg': heroSplash(), 'signal.svg': signal(), 'archive.svg': archive(), 'tools.svg': tools(), 'end.svg': end() };
 for (const [f, s] of Object.entries(panels)) writeFileSync(new URL(f, OUT), s);
 console.log(`built ${Object.keys(panels).length} panels: total ${total}, ${thisYear} ${yearTotal}, streak ${streak}, longest ${longest}`);
