@@ -25,6 +25,8 @@ jobs:
         with:
           node-version: 22
       - run: node scripts/build.mjs
+        env:
+          GITHUB_TOKEN: ${{ github.token }} # raises the commit search rate limit
       - name: Commit panels
         run: |
           git add assets
